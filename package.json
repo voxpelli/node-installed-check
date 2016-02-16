@@ -1,0 +1,31 @@
+{
+  "name": "installed-check",
+  "version": "1.0.0",
+  "description": "Checks that all dependencies in your package.json have supported versions installed",
+  "homepage": "http://github.com/voxpelli/node-installed-check",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/voxpelli/node-installed-check.git"
+  },
+  "main": "index.js",
+  "bin": {
+    "installed-check": "cli.js"
+  },
+  "scripts": {
+    "test": "semistandard"
+  },
+  "keywords": [],
+  "author": "Pelle Wessman <pelle@kodfabrik.se> (http://kodfabrik.se/)",
+  "license": "MIT",
+  "engines": {
+    "node": ">=5.0.0"
+  },
+  "dependencies": {
+    "read-installed": "^4.0.3",
+    "read-package-json": "^2.0.3",
+    "semver": "^5.1.0"
+  },
+  "devDependencies": {
+    "semistandard": "^7.0.5"
+  }
+}
