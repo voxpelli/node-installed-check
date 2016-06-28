@@ -115,7 +115,7 @@ const installedCheck = function (path, options) {
       let notices = packageResult.notices;
 
       if (options.engineCheck) {
-        const engineResult =checkEngineVersions(mainPackage.engines || {}, requiredDependencies, installedDependencies);
+        const engineResult = checkEngineVersions(mainPackage.engines || {}, requiredDependencies, installedDependencies);
 
         errors = errors.concat(engineResult.errors);
         warnings = warnings.concat(engineResult.warnings);
