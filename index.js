@@ -7,18 +7,22 @@ const semverIntersect = require('semver-set').intersect;
 
 const checkPackageVersions = function (requiredDependencies, installedDependencies) {
   const errors = [];
+  const notices = [];
 
   Object.keys(requiredDependencies).forEach(dependency => {
-    var version = (installedDependencies[dependency] || {}).version;
+    const targetVersion = requiredDependencies[dependency];
+    const installedVersion = (installedDependencies[dependency] || {}).version;
 
-    if (!version) {
+    if (!semver.validRange(targetVersion)) {
+      notices.push(dependency + ': Target version is not a semantic versioning range. Can\'t check');
+    } else if (!installedVersion) {
       errors.push(dependency + ': Missing dependency');
-    } else if (!semver.satisfies(version, requiredDependencies[dependency])) {
-      errors.push(dependency + ': Invalid version, expected a ' + requiredDependencies[dependency]);
+    } else if (!semver.satisfies(installedVersion, targetVersion)) {
+      errors.push(dependency + ': Invalid version, expected a ' + targetVersion);
     }
   });
 
-  return errors;
+  return { errors, notices };
 };
 
 const checkEngineVersions = function (engines, requiredDependencies, installedDependencies) {
@@ -104,14 +108,15 @@ const installedCheck = function (path, options) {
       const requiredDependencies = Object.assign({}, mainPackage.dependencies, mainPackage.devDependencies);
       const installedDependencies = result[1].dependencies;
 
-      let errors = [];
-      let warnings = [];
-      let notices = [];
+      const packageResult = checkPackageVersions(requiredDependencies, installedDependencies);
 
-      errors = errors.concat(checkPackageVersions(requiredDependencies, installedDependencies));
+      let errors = packageResult.errors;
+      let warnings = [];
+      let notices = packageResult.notices;
 
       if (options.engineCheck) {
         const engineResult =checkEngineVersions(mainPackage.engines || {}, requiredDependencies, installedDependencies);
+
         errors = errors.concat(engineResult.errors);
         warnings = warnings.concat(engineResult.warnings);
         notices = notices.concat(engineResult.notices);
