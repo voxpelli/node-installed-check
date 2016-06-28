@@ -21,9 +21,11 @@
     "node": ">=5.0.0"
   },
   "dependencies": {
+    "chalk": "^1.1.3",
     "read-installed": "^4.0.3",
     "read-package-json": "^2.0.3",
-    "semver": "^5.1.0"
+    "semver": "^5.1.0",
+    "semver-set": "voxpelli/semver-set#7fc070b53130604a9749a642e496ded9aecad98a"
   },
   "devDependencies": {
     "semistandard": "^7.0.5"
