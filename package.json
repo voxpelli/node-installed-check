@@ -12,7 +12,7 @@
     "installed-check": "cli.js"
   },
   "scripts": {
-    "test": "semistandard"
+    "test": "semistandard && node cli.js -e"
   },
   "keywords": [],
   "author": "Pelle Wessman <pelle@kodfabrik.se> (http://kodfabrik.se/)",
