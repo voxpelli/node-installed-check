@@ -13,7 +13,7 @@ const options = [
     help: 'Print this help and exit.'
   },
   {
-    names: ['check-engine', 'e'],
+    names: ['engine-check', 'e'],
     type: 'bool',
     help: 'Checks that the engine requirements of the main package is compatible that of its dependencies.'
   },
@@ -53,9 +53,11 @@ if (opts.help) {
   process.exit(0);
 }
 
-installedCheck(opts._args[0], {
-  engineCheck: opts.check_engine
-}).then(result => {
+const checkOptions = {
+  engineCheck: opts.engine_check
+};
+
+installedCheck(opts._args[0], checkOptions).then(result => {
   if (opts.strict) {
     result.errors = result.warnings.concat(result.errors);
     result.warnings = [];
