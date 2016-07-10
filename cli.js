@@ -68,7 +68,10 @@ installedCheck(opts._args[0], checkOptions).then(result => {
     result.errors = result.warnings.concat(result.errors);
     result.warnings = [];
   }
-  if (Object.keys(result).some(key => result[key].length)) {
+  if (
+    result.errors.length ||
+    (opts.verbose && Object.keys(result).some(key => result[key].length))
+  ) {
     console.log('');
   }
   if (opts.verbose && result.notices.length) {
