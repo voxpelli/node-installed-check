@@ -18,6 +18,11 @@ const options = [
     help: 'Checks that the engine requirements of the main package is compatible that of its dependencies.'
   },
   {
+    names: ['engine-no-dev', 'd'],
+    type: 'bool',
+    help: 'Excludes dev dependencies from engine check.'
+  },
+  {
     names: ['strict', 's'],
     type: 'bool',
     help: 'Treat warnings as errors.'
@@ -54,7 +59,8 @@ if (opts.help) {
 }
 
 const checkOptions = {
-  engineCheck: opts.engine_check
+  engineCheck: opts.engine_check,
+  engineNoDev: opts.engine_no_dev
 };
 
 installedCheck(opts._args[0], checkOptions).then(result => {
