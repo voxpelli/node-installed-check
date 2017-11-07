@@ -3,7 +3,7 @@
 const readJson = require('read-package-json');
 const readInstalled = require('read-installed');
 const semver = require('semver');
-const semverIntersect = require('semver-set').intersect;
+const semverIntersect = require('@voxpelli/semver-set').intersect;
 
 const checkPackageVersions = function (requiredDependencies, installedDependencies) {
   const errors = [];

@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.1.2 - 2017-11-07
+
+* **Dependencies**: Moved to published [`@voxpelli/semver-set`](https://www.npmjs.com/package/@voxpelli/semver-set) module, fixes some errenous version checks
+
+## 2.1.1 - 2016-11-06
+
+* Widen version range, support Node 4
+
 ## 2.1.0 - 2016-07-10
 
 ### Added
