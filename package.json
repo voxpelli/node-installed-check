@@ -29,6 +29,6 @@
     "semver-set": "voxpelli/semver-set#7fc070b53130604a9749a642e496ded9aecad98a"
   },
   "devDependencies": {
-    "semistandard": "^7.0.5"
+    "semistandard": "^11.0.0"
   }
 }
