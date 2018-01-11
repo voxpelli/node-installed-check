@@ -5,7 +5,7 @@ const readInstalled = require('read-installed');
 const semver = require('semver');
 const semverIntersect = require('@voxpelli/semver-set').intersect;
 
-const checkPackageVersions = function (requiredDependencies, installedDependencies) {
+const checkPackageVersions = function (requiredDependencies, installedDependencies, optionalDependencies) {
   const errors = [];
   const notices = [];
 
@@ -16,7 +16,9 @@ const checkPackageVersions = function (requiredDependencies, installedDependenci
     if (!semver.validRange(targetVersion)) {
       notices.push(dependency + ': Target version is not a semantic versioning range. Can\'t check');
     } else if (!installedVersion) {
-      errors.push(dependency + ': Missing dependency');
+      if (!optionalDependencies[dependency]) {
+        errors.push(dependency + ': Missing dependency');
+      }
     } else if (!semver.satisfies(installedVersion, targetVersion)) {
       errors.push(dependency + ': Invalid version, expected a ' + targetVersion);
     }
@@ -107,8 +109,9 @@ const installedCheck = function (path, options) {
       const mainPackage = result[0];
       const requiredDependencies = Object.assign({}, mainPackage.dependencies, mainPackage.devDependencies);
       const installedDependencies = result[1].dependencies;
+      const optionalDependencies = Object.assign({}, mainPackage.optionalDependencies);
 
-      const packageResult = checkPackageVersions(requiredDependencies, installedDependencies);
+      const packageResult = checkPackageVersions(requiredDependencies, installedDependencies, optionalDependencies);
 
       let errors = packageResult.errors;
       let warnings = [];
