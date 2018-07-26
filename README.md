@@ -75,6 +75,7 @@ A Promise resolving to:
 ## Options
 
 * `engineCheck` / `--engine-check` / `-e` – if set `installed-check` will check that the installed modules comply with the [engines requirements](https://docs.npmjs.com/files/package.json#engines) of the package.json and suggest an alternative requirement if the installed modules don't comply.
+* `engineIgnores` / `--engine-ignore` / `-i` – if set then the specified module names won't be included in the engine check. `engineIgnores` should an array of module names while the CLI flags should be set once for each module name.
 * `noVersionCheck` / `--no-version-check` / `-n` – if set `installed-check` will not check that the installed modules comply with the version requirements set for it the package.json.
 
 ### Additional command line options

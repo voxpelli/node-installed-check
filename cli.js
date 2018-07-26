@@ -18,6 +18,11 @@ const options = [
     help: 'Checks that the engine requirements of the main package is compatible that of its dependencies.'
   },
   {
+    names: ['engine-ignore', 'i'],
+    type: 'arrayOfString',
+    help: 'Excludes defined dependency from engine check.'
+  },
+  {
     names: ['engine-no-dev', 'd'],
     type: 'bool',
     help: 'Excludes dev dependencies from engine check.'
@@ -66,6 +71,7 @@ if (opts.help) {
 const checkOptions = {
   engineCheck: opts.engine_check,
   engineNoDev: opts.engine_no_dev,
+  engineIgnores: opts.engine_ignore,
   noVersionCheck: opts.no_version_check
 };
 

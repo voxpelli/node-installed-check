@@ -123,9 +123,15 @@ const installedCheck = function (path, options) {
       }
 
       if (options.engineCheck) {
+        const dependencies = Object.assign({}, options.engineNoDev ? mainPackage.dependencies : requiredDependencies);
+
+        (options.engineIgnores || []).forEach(name => {
+          delete dependencies[name];
+        });
+
         const engineResult = checkEngineVersions(
           mainPackage.engines || {},
-          options.engineNoDev ? mainPackage.dependencies : requiredDependencies,
+          dependencies,
           installedDependencies
         );
 
