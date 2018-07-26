@@ -21,7 +21,7 @@
     "node": ">=4.0.0"
   },
   "dependencies": {
-    "@voxpelli/semver-set": "^1.0.0",
+    "@voxpelli/semver-set": "^1.0.1",
     "chalk": "^2.3.0",
     "dashdash": "^1.14.0",
     "read-installed": "^4.0.3",
