@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.2.0 - 2018-07-26
+
+* **Feature**: New `engineIgnores` / `--engine-ignore` / `-i` option enables one to exclude one or more modules from the engine check
+* **Feature**: New `noVersionCheck` / `--no-version-check` / `-n` option enables one to only use the engine check and skip the check of the versions installed
+* **Dependencies**: Updated [`@voxpelli/semver-set`](https://www.npmjs.com/package/@voxpelli/semver-set) module to fix some bugs
+
 ## 2.1.2 - 2017-11-07
 
 * **Dependencies**: Moved to published [`@voxpelli/semver-set`](https://www.npmjs.com/package/@voxpelli/semver-set) module, fixes some errenous version checks
