@@ -23,6 +23,11 @@ const options = [
     help: 'Excludes dev dependencies from engine check.'
   },
   {
+    names: ['no-version-check', 'n'],
+    type: 'bool',
+    help: 'Disables check that all dependencies in your package.json have supported versions installed.'
+  },
+  {
     names: ['strict', 's'],
     type: 'bool',
     help: 'Treat warnings as errors.'
@@ -60,7 +65,8 @@ if (opts.help) {
 
 const checkOptions = {
   engineCheck: opts.engine_check,
-  engineNoDev: opts.engine_no_dev
+  engineNoDev: opts.engine_no_dev,
+  noVersionCheck: opts.no_version_check
 };
 
 installedCheck(opts._args[0], checkOptions).then(result => {

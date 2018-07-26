@@ -111,11 +111,16 @@ const installedCheck = function (path, options) {
       const installedDependencies = result[1].dependencies;
       const optionalDependencies = Object.assign({}, mainPackage.optionalDependencies);
 
-      const packageResult = checkPackageVersions(requiredDependencies, installedDependencies, optionalDependencies);
-
-      let errors = packageResult.errors;
+      let errors = [];
       let warnings = [];
-      let notices = packageResult.notices;
+      let notices = [];
+
+      if (!options.noVersionCheck) {
+        const packageResult = checkPackageVersions(requiredDependencies, installedDependencies, optionalDependencies);
+
+        errors = errors.concat(packageResult.errors);
+        notices = notices.concat(packageResult.notices);
+      }
 
       if (options.engineCheck) {
         const engineResult = checkEngineVersions(
