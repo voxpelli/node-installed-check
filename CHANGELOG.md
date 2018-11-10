@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.0.0 - UNRELEASED
+
+* **Breaking change:** Now requires at least Node.js 8.x (somewhat following the LTS of Node.js itself)
+
 ## 2.2.0 - 2018-07-26
 
 * **Feature**: New `engineIgnores` / `--engine-ignore` / `-i` option enables one to exclude one or more modules from the engine check
