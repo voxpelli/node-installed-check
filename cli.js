@@ -4,7 +4,7 @@
 const chalk = require('chalk');
 const dashdash = require('dashdash');
 
-const installedCheck = require('./');
+const installedCheck = require('installed-check-core');
 
 const options = [
   {
@@ -28,9 +28,9 @@ const options = [
     help: 'Excludes dev dependencies from engine check.'
   },
   {
-    names: ['no-version-check', 'n'],
+    names: ['version-check', 'c'],
     type: 'bool',
-    help: 'Disables check that all dependencies in your package.json have supported versions installed.'
+    help: 'Enables check that all dependencies in your package.json have supported versions installed.'
   },
   {
     names: ['strict', 's'],
@@ -69,13 +69,19 @@ if (opts.help) {
 }
 
 const checkOptions = {
+  path: opts._args[0],
   engineCheck: opts.engine_check,
   engineNoDev: opts.engine_no_dev,
   engineIgnores: opts.engine_ignore,
-  noVersionCheck: opts.no_version_check
+  versionCheck: opts.version_check
 };
 
-installedCheck(opts._args[0], checkOptions).then(result => {
+if (!checkOptions.engineCheck && !checkOptions.versionCheck) {
+  checkOptions.engineCheck = true;
+  checkOptions.versionCheck = true;
+}
+
+installedCheck(checkOptions).then(result => {
   if (opts.strict) {
     result.errors = result.warnings.concat(result.errors);
     result.warnings = [];

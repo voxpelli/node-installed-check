@@ -2,9 +2,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## 3.0.0 - UNRELEASED
+## 3.0.0 - 2019-01-24
 
 * **Breaking change:** Now requires at least Node.js 8.x (somewhat following the LTS of Node.js itself)
+* **Breaking change:** Now defaults to both engine and module version checks
+* **Breaking change:** Engine check and module check is now treated as equals. `--no-version-check` opt-out has been replaced with `--version-check` opt-in
+* **Internal:** Core functionality has been moved to [installed-check-core](https://github.com/voxpelli/node-installed-check-core), this module now just contains the CLI
 
 ## 2.2.0 - 2018-07-26
 

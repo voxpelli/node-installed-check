@@ -7,12 +7,12 @@
     "type": "git",
     "url": "git://github.com/voxpelli/node-installed-check.git"
   },
-  "main": "index.js",
   "bin": {
     "installed-check": "cli.js"
   },
   "scripts": {
-    "test": "semistandard && node cli.js -e"
+    "dependency-check": "JS_FILES=\"*.js lib/*.js\" && dependency-check . $JS_FILES && dependency-check . $JS_FILES --unused --no-dev",
+    "test": "eslint . && node cli.js -i eslint && npm run --silent dependency-check"
   },
   "keywords": [],
   "author": "Pelle Wessman <pelle@kodfabrik.se> (http://kodfabrik.se/)",
@@ -21,14 +21,18 @@
     "node": ">=8.0.0"
   },
   "dependencies": {
-    "@voxpelli/semver-set": "^1.0.1",
     "chalk": "^2.3.0",
     "dashdash": "^1.14.0",
-    "read-installed": "^4.0.3",
-    "read-package-json": "^2.0.3",
-    "semver": "^5.1.0"
+    "installed-check-core": "^3.0.0-0"
   },
   "devDependencies": {
-    "semistandard": "13.0.1"
+    "dependency-check": "^3.3.0",
+    "eslint": "^5.11.1",
+    "eslint-config-semistandard": "^13.0.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0"
   }
 }
