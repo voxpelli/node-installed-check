@@ -11,8 +11,10 @@
     "installed-check": "cli.js"
   },
   "scripts": {
-    "dependency-check": "JS_FILES=\"*.js lib/*.js\" && dependency-check . $JS_FILES && dependency-check . $JS_FILES --unused --no-dev",
-    "test": "eslint . && node cli.js -i eslint && npm run --silent dependency-check"
+    "check:dependency-check": "dependency-check *.js --no-dev",
+    "check:installed-check": "node cli.js -i eslint",
+    "check:eslint": "eslint .",
+    "test": "run-p check:*"
   },
   "keywords": [],
   "author": "Pelle Wessman <pelle@kodfabrik.se> (http://kodfabrik.se/)",
@@ -26,13 +28,14 @@
     "installed-check-core": "^3.0.0"
   },
   "devDependencies": {
-    "dependency-check": "^3.3.0",
-    "eslint": "^5.11.1",
-    "eslint-config-semistandard": "^13.0.0",
-    "eslint-config-standard": "^12.0.0",
+    "dependency-check": "^4.1.0",
+    "eslint": "^6.1.0",
+    "eslint-config-semistandard": "^14.0.0",
+    "eslint-config-standard": "^13.0.1",
     "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-node": "^9.1.0",
     "eslint-plugin-promise": "^4.0.1",
-    "eslint-plugin-standard": "^4.0.0"
+    "eslint-plugin-standard": "^4.0.0",
+    "npm-run-all": "^4.1.5"
   }
 }
