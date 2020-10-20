@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-console */
 'use strict';
 
 const chalk = require('chalk');
@@ -50,13 +51,13 @@ let opts;
 
 try {
   opts = parser.parse(process.argv);
-} catch (e) {
-  console.error(chalk.bgRed('Error:'), e.message);
+} catch (err) {
+  console.error(chalk.bgRed('Error:'), err.message);
   process.exit(1);
 }
 
 if (opts.help) {
-  const help = parser.help().trimRight();
+  const help = parser.help().trimEnd();
   console.log(
     '\n' +
     'Usage: installed-check <path to module folder>\n\n' +
