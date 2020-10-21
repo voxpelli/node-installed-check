@@ -25,7 +25,7 @@
   "dependencies": {
     "chalk": "^2.3.0",
     "dashdash": "^1.14.0",
-    "installed-check-core": "^3.0.0"
+    "installed-check-core": "^4.0.0"
   },
   "devDependencies": {
     "@voxpelli/eslint-config": "6.0.0",

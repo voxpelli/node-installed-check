@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.0.0 - 2020-10-21
+
+* **Breaking change:** Now requires at least Node.js 12.x (somewhat following the LTS of Node.js itself)
+* **Internal:** Uses new `4.x` version of [installed-check-core](https://github.com/voxpelli/node-installed-check-core), containing fewer dependencies that are more modern and eg. typed and async in themselves
+
 ## 3.0.0 - 2019-08-09
 
 * **Breaking change:** Now requires at least Node.js 10.x (somewhat following the LTS of Node.js itself)
