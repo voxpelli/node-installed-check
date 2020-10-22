@@ -47,6 +47,7 @@ const options = [
 
 const parser = dashdash.createParser({ options });
 
+/** @type {{ [option: string]: any }} */
 let opts;
 
 try {
@@ -82,6 +83,21 @@ if (!checkOptions.engineCheck && !checkOptions.versionCheck) {
   checkOptions.versionCheck = true;
 }
 
+/**
+ * @param {{ [key: string]: any }} obj
+ * @returns {boolean}
+ */
+const hasNonEmptyProperties = (obj) => {
+  for (const key in obj) {
+    const value = obj[key];
+    if (value) {
+      if (Array.isArray(value) && value.length === 0) continue;
+      return true;
+    }
+  }
+  return false;
+};
+
 installedCheck(checkOptions).then(result => {
   if (opts.strict) {
     result.errors = result.warnings.concat(result.errors);
@@ -89,7 +105,7 @@ installedCheck(checkOptions).then(result => {
   }
   if (
     result.errors.length ||
-    (opts.verbose && Object.keys(result).some(key => result[key].length))
+    (opts.verbose && hasNonEmptyProperties(result))
   ) {
     console.log('');
   }

@@ -14,6 +14,7 @@
     "check:dependency-check": "dependency-check *.js --no-dev",
     "check:installed-check": "node cli.js -i eslint",
     "check:eslint": "eslint .",
+    "check:tsc": "tsc",
     "test": "run-p check:*"
   },
   "keywords": [],
@@ -23,11 +24,12 @@
     "node": ">=12.0.0"
   },
   "dependencies": {
-    "chalk": "^2.3.0",
+    "chalk": "^4.1.0",
     "dashdash": "^1.14.0",
     "installed-check-core": "^4.0.0"
   },
   "devDependencies": {
+    "@types/node": "^12.19.0",
     "@voxpelli/eslint-config": "6.0.0",
     "dependency-check": "^4.1.0",
     "eslint": "^6.8.0",
@@ -41,6 +43,7 @@
     "eslint-plugin-security": "^1.4.0",
     "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-unicorn": "^19.0.1",
-    "npm-run-all": "^4.1.5"
+    "npm-run-all": "^4.1.5",
+    "typescript": "^4.0.3"
   }
 }
