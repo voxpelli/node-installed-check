@@ -15,7 +15,8 @@
     "check:installed-check": "node cli.js -i eslint",
     "check:eslint": "eslint .",
     "check:tsc": "tsc",
-    "test": "run-p check:*"
+    "check": "run-p check:*",
+    "test": "run-s check"
   },
   "keywords": [],
   "author": "Pelle Wessman <pelle@kodfabrik.se> (http://kodfabrik.se/)",

@@ -21,4 +21,4 @@ jobs:
     - name: npm install and test
       run: |
         npm install
-        npm run heck:installed-check
+        npm run check:installed-check
