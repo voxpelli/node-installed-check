@@ -25,8 +25,8 @@
   },
   "dependencies": {
     "chalk": "^4.1.0",
-    "dashdash": "^1.14.0",
-    "installed-check-core": "^4.0.0"
+    "installed-check-core": "^4.0.1",
+    "meow": "^7.1.1"
   },
   "devDependencies": {
     "@types/node": "^12.19.0",

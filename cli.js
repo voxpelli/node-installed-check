@@ -3,79 +3,74 @@
 'use strict';
 
 const chalk = require('chalk');
-const dashdash = require('dashdash');
+const meow = require('meow');
 
 const installedCheck = require('installed-check-core');
 
-const options = [
-  {
-    names: ['help', 'h'],
-    type: 'bool',
-    help: 'Print this help and exit.'
-  },
-  {
-    names: ['engine-check', 'e'],
-    type: 'bool',
-    help: 'Checks that the engine requirements of the main package is compatible that of its dependencies.'
-  },
-  {
-    names: ['engine-ignore', 'i'],
-    type: 'arrayOfString',
-    help: 'Excludes defined dependency from engine check.'
-  },
-  {
-    names: ['engine-no-dev', 'd'],
-    type: 'bool',
-    help: 'Excludes dev dependencies from engine check.'
-  },
-  {
-    names: ['version-check', 'c'],
-    type: 'bool',
-    help: 'Enables check that all dependencies in your package.json have supported versions installed.'
-  },
-  {
-    names: ['strict', 's'],
-    type: 'bool',
-    help: 'Treat warnings as errors.'
-  },
-  {
-    names: ['verbose', 'v'],
-    type: 'bool',
-    help: 'Shows warnings and notices.'
+// FIXME: When https://github.com/sindresorhus/meow/pull/162 is released, upgrade meow
+const cli = meow(`
+  Usage
+    $ installed-check <path to module folder>
+
+  Defaults to current folder and to do all check.
+
+  Options
+    -e, --engine-check           Set explicitly that an engine check should be made. Deactivates default checks.
+    -i ARG, --engine-ignore=ARG  Excludes defined dependency from engine check.
+    -d, --engine-no-dev          Excludes dev dependencies from engine check.
+    -c, --version-check          Set explicitly that a version check should be made. Deactivates default checks.
+    -s, --strict                 Treat warnings as errors.
+    -v, --verbose                Shows warnings and notices.
+    --help                       Print this help and exits.
+    --version                    Prints current version and exits.
+
+  Examples
+    $ installed-check
+`, {
+  flags: {
+    engineCheck: {
+      alias: 'e',
+      type: 'boolean',
+    },
+    engineIgnore: {
+      alias: 'i',
+      type: 'string',
+      isMultiple: true,
+    },
+    engineNoDev: {
+      alias: 'd',
+      type: 'boolean',
+    },
+    versionCheck: {
+      alias: 'c',
+      type: 'boolean',
+    },
+    strict: {
+      alias: 's',
+      type: 'boolean',
+    },
+    verbose: {
+      alias: 'v',
+      type: 'boolean',
+    }
   }
-];
+});
 
-const parser = dashdash.createParser({ options });
-
-/** @type {{ [option: string]: any }} */
-let opts;
-
-try {
-  opts = parser.parse(process.argv);
-} catch (err) {
-  console.error(chalk.bgRed('Error:'), err.message);
-  process.exit(1);
-}
-
-if (opts.help) {
-  const help = parser.help().trimEnd();
-  console.log(
-    '\n' +
-    'Usage: installed-check <path to module folder>\n\n' +
-    'Defaults to current folder.\n\n' +
-    'Options:\n' +
-    help +
-    '\n'
-  );
-  process.exit(0);
-}
+const {
+  engineCheck,
+  engineNoDev,
+  engineIgnore: engineIgnores,
+  versionCheck,
+  strict,
+  verbose
+} = cli.flags;
 
 const checkOptions = {
-  path: opts._args[0],
-  engineCheck: opts.engine_check,
-  engineNoDev: opts.engine_no_dev,
-  engineIgnores: opts.engine_ignore,
-  versionCheck: opts.version_check
+  path: cli.input[0],
+  engineCheck,
+  engineNoDev,
+  engineIgnores,
+  versionCheck,
 };
 
 if (!checkOptions.engineCheck && !checkOptions.versionCheck) {
@@ -99,20 +94,20 @@ const hasNonEmptyProperties = (obj) => {
 };
 
 installedCheck(checkOptions).then(result => {
-  if (opts.strict) {
+  if (strict) {
     result.errors = result.warnings.concat(result.errors);
     result.warnings = [];
   }
   if (
     result.errors.length ||
-    (opts.verbose && hasNonEmptyProperties(result))
+    (verbose && hasNonEmptyProperties(result))
   ) {
     console.log('');
   }
-  if (opts.verbose && result.notices.length) {
+  if (verbose && result.notices.length) {
     console.log(chalk.blue('Dependency notices:') + '\n\n' + result.notices.join('\n') + '\n');
   }
-  if (opts.verbose && result.warnings.length) {
+  if (verbose && result.warnings.length) {
     console.log(chalk.yellow('Dependency warnings:') + '\n\n' + result.warnings.join('\n') + '\n');
   }
   if (result.errors.length) {
