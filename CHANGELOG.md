@@ -2,10 +2,17 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## 4.0.0 - 2020-10-21
+## 4.0.0 - YYYY-MM-DD
+
+* _TODO:_ Update meow to fix https://github.com/sindresorhus/meow/pull/162
+
+## 4.0.0-0 - 2020-10-22
 
 * **Breaking change:** Now requires at least Node.js 12.x (somewhat following the LTS of Node.js itself)
-* **Internal:** Uses new `4.x` version of [installed-check-core](https://github.com/voxpelli/node-installed-check-core), containing fewer dependencies that are more modern and eg. typed and async in themselves
+* **Dependencies**: Moved from `2.x` to modern `4.x` version of [`chalk`](https://www.npmjs.com/package/chalk)
+* **Dependencies**: Now using [`meow`](https://www.npmjs.com/package/meow) instead of [`dashdash`](https://www.npmjs.com/package/dashdash) to parse the CLI input
+* **Dependencies:** Uses new `4.x` version of [installed-check-core](https://github.com/voxpelli/node-installed-check-core), containing fewer dependencies that are more modern and eg. typed and async in themselves
+* **Internal:**  Added strict type checking (using Typescript) verifying that the javascript code doesn't violate any assumptions.
 
 ## 3.0.0 - 2019-08-09
 
