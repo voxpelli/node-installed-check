@@ -8,7 +8,6 @@ const meow = require('meow');
 
 const installedCheck = require('installed-check-core');
 
-// FIXME: When https://github.com/sindresorhus/meow/pull/162 is released, upgrade meow
 const cli = meow(`
   Usage
     $ installed-check <path to module folder>
