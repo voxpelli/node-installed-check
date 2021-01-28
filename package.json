@@ -12,7 +12,7 @@
   },
   "scripts": {
     "check:dependency-check": "dependency-check *.js --no-dev",
-    "check:installed-check": "node cli.js -i eslint",
+    "check:installed-check": "node cli.js",
     "check:eslint": "eslint .",
     "check:tsc": "tsc",
     "check": "run-p check:*",
