@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
+/* eslint-disable promise/always-return, no-console */
+
 'use strict';
 
 const chalk = require('chalk');
