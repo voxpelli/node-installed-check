@@ -1,10 +1,13 @@
 # Change Log
+
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## 4.0.0 - YYYY-MM-DD
+## 4.0.0 - 2021-01-28
 
-* _TODO:_ Update meow to fix https://github.com/sindresorhus/meow/pull/162
+Apart from changes in `4.0.0-0`:
+
+* **Dependencies**: Updated [`meow`](https://www.npmjs.com/package/meow) to fix some ignore [flags being greedy](https://github.com/sindresorhus/meow/pull/162)
 
 ## 4.0.0-0 - 2020-10-22
 
