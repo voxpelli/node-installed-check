@@ -95,7 +95,7 @@ const hasNonEmptyProperties = (obj) => {
 
 installedCheck(checkOptions).then(result => {
   if (strict) {
-    result.errors = result.warnings.concat(result.errors);
+    result.errors = [...result.warnings, ...result.errors];
     result.warnings = [];
   }
   if (
