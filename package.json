@@ -12,10 +12,12 @@
   },
   "scripts": {
     "check:dependency-check": "dependency-check *.js --no-dev",
-    "check:installed-check": "node cli.js",
     "check:eslint": "eslint .",
+    "check:installed-check": "node cli.js",
     "check:tsc": "tsc",
     "check": "run-p check:*",
+    "sync-gh-actions": "ghat",
+    "test-ci": "run-s check:installed-check",
     "test": "run-s check"
   },
   "keywords": [],
@@ -44,6 +46,7 @@
     "eslint-plugin-promise": "^4.3.1",
     "eslint-plugin-security": "^1.4.0",
     "eslint-plugin-unicorn": "^28.0.0",
+    "ghat": "^0.14.0",
     "npm-run-all": "^4.1.5",
     "typescript": "^4.1.3"
   }
