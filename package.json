@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "chalk": "^4.1.0",
-    "installed-check-core": "^4.0.1",
+    "installed-check-core": "^5.0.0-0",
     "meow": "^9.0.0"
   },
   "devDependencies": {
