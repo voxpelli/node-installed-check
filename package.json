@@ -38,7 +38,7 @@
     "@voxpelli/tsconfig": "^2.0.0",
     "dependency-check": "^4.1.0",
     "eslint": "^7.21.0",
-    "eslint-config-standard": "^16.0.2",
+    "eslint-config-standard": "^16.0.3",
     "eslint-plugin-es": "^4.1.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsdoc": "^30.7.13",
