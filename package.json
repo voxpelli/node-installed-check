@@ -40,7 +40,7 @@
     "eslint": "^7.32.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-es": "^4.1.0",
-    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-jsdoc": "^30.7.13",
     "eslint-plugin-mocha": "^9.0.0",
     "eslint-plugin-node": "^11.1.0",
