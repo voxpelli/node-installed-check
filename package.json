@@ -1,6 +1,6 @@
 {
   "name": "installed-check",
-  "version": "5.0.0-1",
+  "version": "5.0.0",
   "description": "Checks that all dependencies in your package.json have supported versions installed",
   "homepage": "http://github.com/voxpelli/node-installed-check",
   "repository": {
