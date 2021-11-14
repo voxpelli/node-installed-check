@@ -115,6 +115,7 @@ installedCheck(checkOptions).then(result => {
     process.exit(1);
   }
 }).catch(err => {
-  console.error(chalk.bgRed('Unexpected error:') + ' ' + err.message + '\n\n' + err.stack + '\n');
+  const { messageWithCauses, stackWithCauses } = require('pony-cause');
+  console.error(chalk.bgRed('Unexpected error:') + ' ' + messageWithCauses(err) + '\n\n' + stackWithCauses(err) + '\n');
   process.exit(1);
 });
