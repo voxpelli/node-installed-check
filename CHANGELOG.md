@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.0.0 - 2021-11-14
+
+* **Breaking change:** Now requires Node.js version matching `^12.20.0 || ^14.13.1 || >=16.0.0`, to match that of `installed-check-core@5.x` which in turn sets it to ensure compatibility with ESM-based dependencies
+* **Possibly breaking change:** Uses new [`5.x` version](https://github.com/voxpelli/node-installed-check-core/releases/tag/v5.0.0) of [`installed-check-core`](https://github.com/voxpelli/node-installed-check-core), which contains a newer engine intersection module as well as some alterations to errors, warnings and notices to make them more robust and consistent (thanks to eg. new tests)
+
+## 5.0.0-1 - 2021-10-19
+
+* **Breaking change:** Now requires Node.js version matching `^12.20.0 || ^14.13.1 || >=16.0.0`, to ensure compatibility with ESM-based dependencies
+
 ## 5.0.0-0 - 2021-03-12
 
 * **Possibly breaking change:** Uses new [`5.x` version](https://github.com/voxpelli/node-installed-check-core/releases/tag/v5.0.0-0) of [`installed-check-core`](https://github.com/voxpelli/node-installed-check-core), which contains a newer engine intersection module as well as some alterations to errors, warnings and notices to make them more robust and consistent (thanks to eg. new tests)
