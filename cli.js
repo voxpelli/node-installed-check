@@ -58,8 +58,8 @@ const cli = meow(`
 
 const {
   engineCheck,
-  engineNoDev,
   engineIgnore: engineIgnores,
+  engineNoDev,
   versionCheck,
   strict,
   verbose
