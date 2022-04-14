@@ -78,7 +78,7 @@ if (!checkOptions.engineCheck && !checkOptions.versionCheck) {
 }
 
 /**
- * @param {{ [key: string]: any }} obj
+ * @param {{ [key: string]: unknown }} obj
  * @returns {boolean}
  */
 const hasNonEmptyProperties = (obj) => {
