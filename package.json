@@ -8,12 +8,12 @@
     "url": "git://github.com/voxpelli/node-installed-check.git"
   },
   "bin": {
-    "installed-check": "cli.js"
+    "installed-check": "cli-wrapper.js"
   },
   "scripts": {
     "check:dependency-check": "dependency-check *.js --no-dev",
     "check:eslint": "eslint .",
-    "check:installed-check": "node cli.js",
+    "check:installed-check": "node cli-wrapper.js -i eslint-plugin-jsdoc",
     "check:tsc": "tsc",
     "check": "run-p check:*",
     "sync-gh-actions": "ghat",
@@ -24,7 +24,7 @@
   "author": "Pelle Wessman <pelle@kodfabrik.se> (http://kodfabrik.se/)",
   "license": "MIT",
   "engines": {
-    "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+    "node": "^14.17.0 || >=16.0.0"
   },
   "dependencies": {
     "chalk": "^4.1.0",
@@ -33,11 +33,11 @@
     "pony-cause": "^1.1.1"
   },
   "devDependencies": {
-    "@types/node": "^12.20.37",
+    "@types/node": "^14.18.13",
     "@voxpelli/eslint-config": "^13.0.3",
     "@voxpelli/eslint-config-jsdoc-ts": "^1.0.0",
-    "@voxpelli/tsconfig": "^3.0.0",
-    "dependency-check": "^5.0.0-3",
+    "@voxpelli/tsconfig": "^3.1.0",
+    "dependency-check": "^5.0.0-4",
     "eslint": "^8.13.0",
     "eslint-config-standard": "^17.0.0-1",
     "eslint-plugin-es": "^4.1.0",
@@ -51,6 +51,6 @@
     "eslint-plugin-unicorn": "^41.0.1",
     "ghat": "^0.14.0",
     "npm-run-all": "^4.1.5",
-    "typescript": "~4.4.4"
+    "typescript": "~4.5.0"
   }
 }
