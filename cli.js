@@ -59,9 +59,9 @@ const {
   engineCheck,
   engineIgnore: engineIgnores,
   engineNoDev,
-  versionCheck,
   strict,
-  verbose
+  verbose,
+  versionCheck
 } = cli.flags;
 
 const checkOptions = {
