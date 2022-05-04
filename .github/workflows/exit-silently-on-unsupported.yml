@@ -2,7 +2,7 @@ env: {}
 
 # FILE GENERATED WITH: npx ghat voxpelli/ghatemplates/exit-silently-on-unsupported
 # SOURCE: https://github.com/voxpelli/ghatemplates
-# OPTIONS: {"set":["jobs.test.strategy.matrix.files=[./cli.js]"]}
+# OPTIONS: {"set":["jobs.test.strategy.matrix.files=[./cli-wrapper.js]"]}
 
 name: Exit silently on unsupported
 on:
@@ -26,7 +26,7 @@ jobs:
         os:
           - ubuntu-latest
         files:
-          - ./cli.js
+          - ./cli-wrapper.js
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node_version }}
@@ -47,6 +47,6 @@ jobs:
             ${{ runner.os }}-node-
       - name: npm install
         run: npm install --ignore-scripts
-      - name: Test that the command line program exits cleanly.
+      - name: Test that "${{ matrix.files }}" exits silently
         run: ${{ matrix.files }}
         shell: bash
