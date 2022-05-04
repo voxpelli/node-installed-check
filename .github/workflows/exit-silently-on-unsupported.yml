@@ -1,9 +1,12 @@
 env: {}
 
-# FILE GENERATED WITH: npx ghat voxpelli/ghatemplates/nodejs
+# FILE GENERATED WITH: npx ghat voxpelli/ghatemplates/exit-silently-on-unsupported
 # SOURCE: https://github.com/voxpelli/ghatemplates
 
-name: Node CI
+# Special test for the oldest version of Node.js that we "support"
+# Ensures that the exposed CLI scripts fails silently there
+
+name: Exit silently on unsupported
 
 on:
   push:
@@ -22,8 +25,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node_version: [14, 16, 18]
-        os: [ubuntu-latest, windows-latest]
+        node_version: [0.10.48]
+        os: [ubuntu-latest]
 
     steps:
     - uses: actions/checkout@v3
@@ -43,4 +46,6 @@ jobs:
           ${{ runner.os }}-node-
     - name: npm install
       run: npm install --ignore-scripts
-    - run: npm run test-ci
+    - name: Test that the command line program exits cleanly.
+      run: ./cli.js
+      shell: bash
