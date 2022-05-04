@@ -1,8 +1,6 @@
 # Installed Check
 
 [![Build Status](https://github.com/voxpelli/node-installed-check/workflows/Node%20CI/badge.svg)](https://github.com/voxpelli/node-installed-check/actions)
-[![dependencies Status](https://david-dm.org/voxpelli/node-installed-check/status.svg)](https://david-dm.org/voxpelli/node-installed-check)
-[![Known Vulnerabilities](https://snyk.io/test/github/voxpelli/node-installed-check/badge.svg?targetFile=package.json)](https://snyk.io/test/github/voxpelli/node-installed-check?targetFile=package.json)
 [![js-semistandard-style](https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg?style=flat)](https://github.com/Flet/semistandard)
 
 Checks that the installed modules comply fulfill the requirements of package.json.
