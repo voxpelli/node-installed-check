@@ -48,5 +48,5 @@ jobs:
       - name: npm install
         run: npm install --ignore-scripts
       - name: Test that "${{ matrix.files }}" exits silently
-        run: ${{ matrix.files }}
+        run: node ${{ matrix.files }}
         shell: bash
