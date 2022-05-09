@@ -2,9 +2,9 @@ env: {}
 
 # FILE GENERATED WITH: npx ghat voxpelli/ghatemplates/nodejs
 # SOURCE: https://github.com/voxpelli/ghatemplates
+# OPTIONS: {"set":["jobs.test.strategy.matrix.os=[ubuntu-latest,windows-latest]"]}
 
 name: Node CI
-
 on:
   push:
     branches:
@@ -14,7 +14,6 @@ on:
   pull_request:
     branches:
       - main
-
 jobs:
   test:
     name: Node ${{ matrix.node_version }} on ${{ matrix.os }}
@@ -22,25 +21,31 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node_version: [14, 16, 18]
-        os: [ubuntu-latest, windows-latest]
-
+        node_version:
+          - 14
+          - 16
+          - 18
+        os:
+          - ubuntu-latest
+          - windows-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node_version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node_version }}
-    - name: Get npm cache directory
-      id: npm-cache-dir
-      run: |
-        echo "::set-output name=dir::$(npm config get cache)"
-    - uses: actions/cache@v3
-      with:
-        path: ${{ steps.npm-cache-dir.outputs.dir }}
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json', '**/package.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
-    - name: npm install
-      run: npm install --ignore-scripts
-    - run: npm run test-ci
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node_version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node_version }}
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
+      - uses: actions/cache@v3
+        with:
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: >-
+            ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json',
+            '**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: npm install
+        run: npm install --ignore-scripts
+      - run: npm run test-ci
