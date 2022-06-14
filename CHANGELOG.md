@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 6.0.0 - 2022-06-14
+
+* **Breaking change:** Now requires Node.js version matching ^14.18.0 || >=16.0.0`, to match that of `installed-check-core@6.x`
+* **Internal:** Now an ESM based project
+
 ## 5.0.0 - 2021-11-14
 
 * **Breaking change:** Now requires Node.js version matching `^12.20.0 || ^14.13.1 || >=16.0.0`, to match that of `installed-check-core@5.x` which in turn sets it to ensure compatibility with ESM-based dependencies
