@@ -27,6 +27,10 @@
   "engines": {
     "node": "^14.18.0 || >=16.0.0"
   },
+  "files": [
+    "cli-wrapper.js",
+    "cli.mjs"
+  ],
   "dependencies": {
     "chalk": "^5.0.1",
     "installed-check-core": "^5.0.0",
