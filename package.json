@@ -33,7 +33,7 @@
   ],
   "dependencies": {
     "chalk": "^5.0.1",
-    "installed-check-core": "^5.0.0",
+    "installed-check-core": "^6.0.0",
     "meow": "^10.1.2",
     "pony-cause": "^2.0.0"
   },
