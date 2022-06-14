@@ -1,7 +1,7 @@
 # Installed Check
 
-[![Build Status](https://github.com/voxpelli/node-installed-check/workflows/Node%20CI/badge.svg)](https://github.com/voxpelli/node-installed-check/actions)
-[![js-semistandard-style](https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg?style=flat)](https://github.com/Flet/semistandard)
+[![js-semistandard-style](https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg)](https://github.com/voxpelli/eslint-config)
+[![Types in JS](https://img.shields.io/badge/types_in_js-yes-brightgreen)](https://github.com/voxpelli/types-in-js)
 
 Checks that the installed modules comply fulfill the requirements of package.json.
 
