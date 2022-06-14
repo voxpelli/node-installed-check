@@ -28,9 +28,9 @@
     "node": "^14.17.0 || >=16.0.0"
   },
   "dependencies": {
-    "chalk": "^4.1.0",
+    "chalk": "^5.0.1",
     "installed-check-core": "^5.0.0",
-    "meow": "^9.0.0",
+    "meow": "^10.1.2",
     "pony-cause": "^2.0.0"
   },
   "devDependencies": {

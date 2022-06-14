@@ -2,6 +2,10 @@
   "extends": "@voxpelli/tsconfig/node14.json",
   "files": [
     "cli-wrapper.js",
-    "cli.js"
-  ]
+    "cli.mjs"
+  ],
+  "compilerOptions": {
+    "module": "ES2020",
+    "moduleResolution": "node"
+  }
 }

@@ -2,10 +2,10 @@
 
 'use strict';
 
-const chalk = require('chalk');
-const meow = require('meow');
-
-const installedCheck = require('installed-check-core');
+import chalk from 'chalk';
+import meow from 'meow';
+import { messageWithCauses, stackWithCauses } from 'pony-cause';
+import installedCheck from 'installed-check-core';
 
 const cli = meow(`
   Usage
@@ -52,7 +52,8 @@ const cli = meow(`
       alias: 'v',
       type: 'boolean',
     }
-  }
+  },
+  importMeta: import.meta
 });
 
 const {
@@ -114,7 +115,6 @@ installedCheck(checkOptions).then(result => {
     process.exit(1);
   }
 }).catch(err => {
-  const { messageWithCauses, stackWithCauses } = require('pony-cause');
   console.error(chalk.bgRed('Unexpected error:') + ' ' + messageWithCauses(err) + '\n\n' + stackWithCauses(err) + '\n');
   process.exit(1);
 });
