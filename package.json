@@ -55,7 +55,7 @@
     "eslint-plugin-sort-destructure-keys": "^1.4.0",
     "eslint-plugin-unicorn": "^42.0.0",
     "ghat": "^0.14.0",
-    "npm-run-all2": "^6.0.0",
+    "npm-run-all2": "^6.0.1",
     "type-coverage": "^2.21.1",
     "typescript": "~4.5.0"
   }
