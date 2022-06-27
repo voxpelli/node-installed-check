@@ -28,6 +28,7 @@
     "node": "^14.18.0 || >=16.0.0"
   },
   "files": [
+    "cli-wrapper-bridge.js",
     "cli-wrapper.js",
     "cli.mjs"
   ],
