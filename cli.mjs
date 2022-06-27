@@ -5,7 +5,7 @@
 import chalk from 'chalk';
 import meow from 'meow';
 import { messageWithCauses, stackWithCauses } from 'pony-cause';
-import installedCheck from 'installed-check-core';
+import { installedCheck } from 'installed-check-core';
 
 const cli = meow(`
   Usage
