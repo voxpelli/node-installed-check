@@ -13,7 +13,7 @@
   "scripts": {
     "check:dependency-check": "dependency-check *.js --no-dev",
     "check:eslint": "eslint .",
-    "check:installed-check": "node cli-wrapper.js -i eslint-plugin-jsdoc -i npm-run-all2",
+    "check:installed-check": "node cli-wrapper.js -i eslint-plugin-jsdoc",
     "check:tsc": "tsc",
     "check:type-coverage": "type-coverage --detail --strict --at-least 95",
     "check": "run-p check:*",
@@ -41,7 +41,7 @@
     "@types/node": "^14.18.13",
     "@voxpelli/eslint-config": "^14.0.4",
     "@voxpelli/tsconfig": "^3.1.0",
-    "dependency-check": "^5.0.0-6",
+    "dependency-check": "^5.0.0-7",
     "eslint": "^8.16.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-es": "^4.1.0",
@@ -55,7 +55,7 @@
     "eslint-plugin-sort-destructure-keys": "^1.4.0",
     "eslint-plugin-unicorn": "^42.0.0",
     "ghat": "^0.14.0",
-    "npm-run-all2": "^6.0.0",
+    "npm-run-all2": "^6.0.1",
     "type-coverage": "^2.21.1",
     "typescript": "~4.5.0"
   }
