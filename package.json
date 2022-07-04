@@ -7,13 +7,18 @@
     "type": "git",
     "url": "git://github.com/voxpelli/node-installed-check.git"
   },
+  "type": "module",
   "bin": {
-    "installed-check": "cli-wrapper.js"
+    "installed-check": "cli-wrapper.cjs"
   },
+  "files": [
+    "cli-wrapper.cjs",
+    "cli.js"
+  ],
   "scripts": {
-    "check:dependency-check": "dependency-check *.js --no-dev",
+    "check:dependency-check": "dependency-check *.js *.cjs --no-dev",
     "check:eslint": "eslint .",
-    "check:installed-check": "node cli-wrapper.js -i eslint-plugin-jsdoc",
+    "check:installed-check": "node cli-wrapper.cjs -i eslint-plugin-jsdoc",
     "check:tsc": "tsc",
     "check:type-coverage": "type-coverage --detail --strict --at-least 95",
     "check": "run-p check:*",
@@ -26,10 +31,6 @@
   "engines": {
     "node": "^14.18.0 || >=16.0.0"
   },
-  "files": [
-    "cli-wrapper.js",
-    "cli.mjs"
-  ],
   "dependencies": {
     "chalk": "^5.0.1",
     "installed-check-core": "^6.0.0",
