@@ -17,7 +17,6 @@
     "check:tsc": "tsc",
     "check:type-coverage": "type-coverage --detail --strict --at-least 95",
     "check": "run-p check:*",
-    "sync-gh-actions": "ghat",
     "test-ci": "run-s check:installed-check",
     "test": "run-s check"
   },
@@ -55,7 +54,6 @@
     "eslint-plugin-security": "^1.5.0",
     "eslint-plugin-sort-destructure-keys": "^1.4.0",
     "eslint-plugin-unicorn": "^42.0.0",
-    "ghat": "^0.14.0",
     "npm-run-all2": "^6.0.1",
     "type-coverage": "^2.21.2",
     "typescript": "~4.6.0"
