@@ -17,7 +17,7 @@
   ],
   "scripts": {
     "check:dependency-check": "dependency-check *.js *.cjs --no-dev",
-    "check:eslint": "eslint .",
+    "check:eslint": "eslint --report-unused-disable-directives .",
     "check:installed-check": "node cli-wrapper.cjs -i eslint-plugin-jsdoc",
     "check:tsc": "tsc",
     "check:type-coverage": "type-coverage --detail --strict --at-least 95",

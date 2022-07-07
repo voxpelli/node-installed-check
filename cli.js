@@ -1,4 +1,4 @@
-/* eslint-disable promise/always-return, no-console, unicorn/no-process-exit */
+/* eslint-disable no-console, unicorn/no-process-exit */
 
 import chalk from 'chalk';
 import meow from 'meow';
