@@ -3,9 +3,25 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 6.0.4 - 2022-07-19
+
+* **Dependencies:** Update [`installed-check-core`](https://github.com/voxpelli/node-installed-check-core)
+
+## 6.0.3 - 2022-07-04
+
+* **Fix:** Fixed regression on Windows
+
+## 6.0.2 - 2022-07-04
+
+* **Refactor:** Use version guard mechanism from [`version-guard`](https://github.com/voxpelli/version-guard) module
+
+## 6.0.1 - 2022-06-27
+
+* **Dependencies:** Update dependencies, including new [`installed-check-core`](https://github.com/voxpelli/node-installed-check-core)
+
 ## 6.0.0 - 2022-06-14
 
-* **Breaking change:** Now requires Node.js version matching ^14.18.0 || >=16.0.0`, to match that of `installed-check-core@6.x`
+* **Breaking change:** Now requires Node.js version matching `^14.18.0 || >=16.0.0`, to match that of `installed-check-core@6.x`
 * **Internal:** Now an ESM based project
 
 ## 5.0.0 - 2021-11-14
