@@ -55,7 +55,7 @@
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-security": "^1.5.0",
     "eslint-plugin-sort-destructure-keys": "^1.4.0",
-    "eslint-plugin-unicorn": "^42.0.0",
+    "eslint-plugin-unicorn": "^43.0.2",
     "husky": "^8.0.1",
     "npm-run-all2": "^6.0.1",
     "type-coverage": "^2.21.2",
