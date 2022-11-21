@@ -3,9 +3,5 @@
   "files": [
     "cli-wrapper.cjs",
     "cli.js"
-  ],
-  "compilerOptions": {
-    "module": "es2022",
-    "moduleResolution": "node"
-  }
+  ]
 }
