@@ -49,9 +49,9 @@ const cli = meow(`
     verbose: {
       alias: 'v',
       type: 'boolean',
-    }
+    },
   },
-  importMeta: import.meta
+  importMeta: import.meta,
 });
 
 const {
@@ -60,7 +60,7 @@ const {
   engineNoDev,
   strict,
   verbose,
-  versionCheck
+  versionCheck,
 } = cli.flags;
 
 const checkOptions = {
