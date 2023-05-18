@@ -36,8 +36,8 @@
     "chalk": "^5.2.0",
     "installed-check-core": "^7.1.0",
     "meow": "^11.0.0",
-    "pony-cause": "^2.1.9",
-    "version-guard": "^1.0.2"
+    "pony-cause": "^2.1.10",
+    "version-guard": "^1.1.1"
   },
   "devDependencies": {
     "@types/node": "^16.18.27",
