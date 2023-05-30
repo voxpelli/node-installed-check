@@ -40,13 +40,13 @@
     "version-guard": "^1.1.1"
   },
   "devDependencies": {
-    "@types/node": "^16.18.27",
-    "@voxpelli/eslint-config": "^17.0.2",
+    "@types/node": "^16.18.34",
+    "@voxpelli/eslint-config": "^17.0.3",
     "@voxpelli/tsconfig": "^7.0.0",
-    "eslint": "^8.40.0",
-    "eslint-plugin-es-x": "^6.1.0",
+    "eslint": "^8.41.0",
+    "eslint-plugin-es-x": "^7.1.0",
     "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-jsdoc": "^44.2.4",
+    "eslint-plugin-jsdoc": "^44.2.7",
     "eslint-plugin-mocha": "^10.1.0",
     "eslint-plugin-n": "^16.0.0",
     "eslint-plugin-promise": "^6.1.1",
@@ -54,9 +54,9 @@
     "eslint-plugin-sort-destructure-keys": "^1.5.0",
     "eslint-plugin-unicorn": "^47.0.0",
     "husky": "^8.0.3",
-    "knip": "^2.11.0",
+    "knip": "^2.13.0",
     "npm-run-all2": "^6.0.5",
-    "type-coverage": "^2.25.3",
+    "type-coverage": "^2.26.0",
     "typescript": "~5.0.4"
   }
 }
