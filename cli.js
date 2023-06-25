@@ -26,28 +26,28 @@ const cli = meow(`
 `, {
   flags: {
     engineCheck: {
-      alias: 'e',
+      shortFlag: 'e',
       type: 'boolean',
     },
     engineIgnore: {
-      alias: 'i',
+      shortFlag: 'i',
       type: 'string',
       isMultiple: true,
     },
     engineNoDev: {
-      alias: 'd',
+      shortFlag: 'd',
       type: 'boolean',
     },
     versionCheck: {
-      alias: 'c',
+      shortFlag: 'c',
       type: 'boolean',
     },
     strict: {
-      alias: 's',
+      shortFlag: 's',
       type: 'boolean',
     },
     verbose: {
-      alias: 'v',
+      shortFlag: 'v',
       type: 'boolean',
     },
   },

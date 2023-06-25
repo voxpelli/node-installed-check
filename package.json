@@ -30,12 +30,12 @@
   "author": "Pelle Wessman <pelle@kodfabrik.se> (http://kodfabrik.se/)",
   "license": "MIT",
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=16.10.0"
   },
   "dependencies": {
     "chalk": "^5.2.0",
     "installed-check-core": "^7.1.2",
-    "meow": "^11.0.0",
+    "meow": "^12.0.1",
     "pony-cause": "^2.1.10",
     "version-guard": "^1.1.1"
   },
