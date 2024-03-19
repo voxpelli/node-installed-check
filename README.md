@@ -24,23 +24,23 @@ By default checks both engine and module versions against requirements.
 
 ### Command line
 
-```bash
+```sh
 npm install -g installed-check
 ```
 
 Then run it at the root of your project to validate the installed dependencies:
 
-```bash
+```sh
 installed-check
 ```
 
 ### As npm script
 
-```bash
+```sh
 npm install --save-dev installed-check
 ```
 
-```
+```json
 "scripts": {
   "test": "installed-check"
 }
