@@ -62,3 +62,7 @@ Use [installed-check-core](https://github.com/voxpelli/node-installed-check-core
 * `--help` / `-h` – prints all available flags
 * `--strict` / `-s` – treats warnings as errors
 * `--verbose` / `-v` – prints warnings and notices
+
+## Similar modules
+
+* [`knip`](https://github.com/webpro/knip) – finds unused files, dependencies and exports in your JavaScript and TypeScript projects – a great companion module to `installed-check`
