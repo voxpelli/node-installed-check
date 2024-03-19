@@ -22,7 +22,7 @@
     "check:tsc": "tsc",
     "check:type-coverage": "type-coverage --detail --strict --at-least 95",
     "check": "run-p check:*",
-    "prepare": "husky install",
+    "prepare": "husky",
     "test-ci": "run-s check:installed-check",
     "test": "run-s check"
   },
@@ -53,9 +53,9 @@
     "eslint-plugin-security": "^1.7.1",
     "eslint-plugin-sort-destructure-keys": "^1.5.0",
     "eslint-plugin-unicorn": "^48.0.1",
-    "husky": "^8.0.3",
-    "knip": "^2.35.0",
-    "npm-run-all2": "^6.1.1",
+    "husky": "^9.0.11",
+    "knip": "^5.1.2",
+    "npm-run-all2": "^6.1.2",
     "type-coverage": "^2.27.1",
     "typescript": "~5.4.2"
   }
