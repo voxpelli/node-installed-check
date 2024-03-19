@@ -2,4 +2,4 @@
 
 'use strict';
 
-require('version-guard')('./cli.js', 16, 10);
+require('version-guard')('./cli.js', 18, 6);
