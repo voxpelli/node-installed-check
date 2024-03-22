@@ -18,4 +18,4 @@ jobs:
     uses: voxpelli/ghatemplates/.github/workflows/exit-silently-on-unsupported.yml@main
     with:
       files: './cli-wrapper.cjs'
-      node-versions: '0.10.48,12'
+      node-versions: '12'
