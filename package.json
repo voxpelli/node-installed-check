@@ -1,7 +1,7 @@
 {
   "name": "installed-check",
   "version": "8.0.1",
-  "description": "Checks that all dependencies in your package.json have supported versions installed",
+  "description": "Verifies that installed modules comply with the requirements specified in package.json",
   "homepage": "http://github.com/voxpelli/node-installed-check",
   "repository": {
     "type": "git",
@@ -26,7 +26,17 @@
     "test-ci": "run-s check:installed-check",
     "test": "run-s check"
   },
-  "keywords": [],
+  "keywords": [
+    "cli",
+    "dependencies",
+    "devDependencies",
+    "peerDependencies",
+    "lint",
+    "maintenance",
+    "monorepo",
+    "scan",
+    "workspace"
+  ],
   "author": "Pelle Wessman <pelle@kodfabrik.se> (http://kodfabrik.se/)",
   "license": "MIT",
   "engines": {
@@ -34,7 +44,7 @@
   },
   "dependencies": {
     "chalk": "^5.3.0",
-    "installed-check-core": "^7.1.4",
+    "installed-check-core": "^8.1.0",
     "meow": "^12.1.1",
     "pony-cause": "^2.1.10",
     "version-guard": "^1.1.1"

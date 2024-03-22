@@ -16,9 +16,9 @@
 
 </div>
 
-Checks that the installed modules comply fulfill the requirements of package.json.
+Verifies that installed modules comply with the requirements specified in `package.json`.
 
-By default checks both engine and module versions against requirements.
+By default checks engine ranges, peer dependency ranges and installed versions and, in mono-repos using workspaces, by default checks all workspaces as well as the workspace root.
 
 ## Usage
 
@@ -50,18 +50,30 @@ npm install --save-dev installed-check
 
 Use [installed-check-core](https://github.com/voxpelli/node-installed-check-core)
 
-## Options
+## Checks
 
-* `--engine-check` / `-e` – if set `installed-check` will check that the installed modules comply with the [engines requirements](https://docs.npmjs.com/files/package.json#engines) of the package.json and suggest an alternative requirement if the installed modules don't comply. If set, the default checks will be disabled.
-* `--engine-ignore` / `-i` – if set then the specified module names won't be included in the engine check. `engineIgnores` should an array of module names while the CLI flags should be set once for each module name.
-* `--engine-no-dev` / `-d` – if set then dev dependencies won't be included in the engine check.
-* `--version-check` / `-c` – if set `installed-check` will check that the installed modules comply with the version requirements set for it the package.json. If set, the default checks will be disabled.
+* `--engine-check` / `-e` – if set `installed-check` will check that the installed modules doesn't have stricter [`engines`](https://docs.npmjs.com/cli/v10/configuring-npm/package-json#engines) ranges than those  in the `package.json` and suggests an alternative requirement if they do. If set, the default checks will be overriden.
+* `--peer-check` / `-e` – if set `installed-check` will check that the installed modules doesn't have stricter [`peerDependencies`](https://docs.npmjs.com/cli/v10/configuring-npm/package-json#peerdependencies) ranges than those in the `package.json` and suggests an alternative requirement if they do. If set, the default checks will be overriden.
+* `--version-check` / `-c` – if set `installed-check` will check that the installed modules comply with the version requirements set for them the `package.json`. If set, the default checks will be overriden.
+
+## Check options
+
+* `--ignore ARG` / `-i ARG` – excludes the named dependency from non-version checks. Supports [`picomatch`](https://www.npmjs.com/package/picomatch) globbing syntax, eg. `@types/*` (but be sure to provide the pattern in a way that avoids your shell from matching it against files first)
+* `--ignore-dev` / `-d` – if set then dev dependencies won't be included in the non-version checks.
+* `--strict` / `-s` – treats warnings as errors
+
+## Workspace options
+
+  * `--no-include-workspace-root` – excludes the workspace root package. Negated equivalent of npm's [`--include-workspace-root`](https://docs.npmjs.com/cli/v10/commands/npm-run-script#include-workspace-root)
+  * `--no-workspaces` – excludes workspace packages. Negated equivalent of npm's [`--workspaces`](https://docs.npmjs.com/cli/v10/commands/npm-run-script#workspaces)
+  * `--workspace=ARG` / `-w ARG` – excludes all workspace packages not matching these names / paths. Equivalent to npm's [`--workspace` / `-w`](https://docs.npmjs.com/cli/v10/commands/npm-run-script#workspace)
 
 ### Additional command line options
 
-* `--help` / `-h` – prints all available flags
-* `--strict` / `-s` – treats warnings as errors
+* `--debug` – prints debug info
 * `--verbose` / `-v` – prints warnings and notices
+* `--help` / `-h` – prints help and exits
+* `--version` – prints current version and exits
 
 ## Similar modules
 
