@@ -1,6 +1,6 @@
 {
   "name": "installed-check",
-  "version": "8.0.1",
+  "version": "9.0.0",
   "description": "Verifies that installed modules comply with the requirements specified in package.json",
   "homepage": "http://github.com/voxpelli/node-installed-check",
   "repository": {
