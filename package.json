@@ -45,7 +45,7 @@
   "dependencies": {
     "chalk": "^5.3.0",
     "installed-check-core": "^8.1.0",
-    "meow": "^12.1.1",
+    "meow": "^13.0.0",
     "pony-cause": "^2.1.10",
     "version-guard": "^1.1.1"
   },
