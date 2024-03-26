@@ -67,6 +67,6 @@
     "knip": "^5.1.2",
     "npm-run-all2": "^6.1.2",
     "type-coverage": "^2.27.1",
-    "typescript": "~5.4.2"
+    "typescript": "~5.4.3"
   }
 }
