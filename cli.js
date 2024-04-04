@@ -42,6 +42,8 @@ const cli = meow(`
   flags: {
     debug: { type: 'boolean' },
     engineCheck: { shortFlag: 'e', type: 'boolean' },
+    engineIgnore: { type: 'string', isMultiple: true },
+    engineNoDev: { type: 'boolean' },
     ignore: { shortFlag: 'i', type: 'string', isMultiple: true },
     ignoreDev: { shortFlag: 'd', type: 'boolean' },
     includeWorkspaceRoot: { type: 'boolean', 'default': true },
@@ -63,8 +65,8 @@ if (cli.input.length > 1) {
 const {
   debug,
   engineCheck,
-  ignore,
-  ignoreDev,
+  engineIgnore, // deprecated
+  engineNoDev, // deprecated
   includeWorkspaceRoot,
   peerCheck,
   strict,
@@ -73,6 +75,21 @@ const {
   workspace,
   workspaces,
 } = cli.flags;
+
+let {
+  ignore,
+  ignoreDev,
+} = cli.flags;
+
+// Handle deprecated flags
+if (engineIgnore?.length) {
+  ignore = [...ignore || [], ...engineIgnore];
+  console.error(chalk.bgRed.black('DEPRECATED:') + ' --engine-ignore is replace by --ignore');
+}
+if (engineNoDev) {
+  ignoreDev = engineNoDev;
+  console.error(chalk.bgRed.black('DEPRECATED:') + ' --engine-no-dev is replace by --ignore-dev');
+}
 
 /** @type {import('installed-check-core').InstalledChecks[]} */
 let checks = [
