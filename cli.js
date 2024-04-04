@@ -3,7 +3,7 @@
 import chalk from 'chalk';
 import meow from 'meow';
 import { messageWithCauses, stackWithCauses } from 'pony-cause';
-import { installedCheck } from 'installed-check-core';
+import { installedCheck, ROOT } from 'installed-check-core';
 
 const EXIT_CODE_ERROR_RESULT = 1;
 const EXIT_CODE_INVALID_INPUT = 2;
@@ -111,17 +111,38 @@ try {
   const result = await installedCheck(checks, lookupOptions, checkOptions);
 
   if (verbose && result.warnings.length) {
-    console.log('\n' + chalk.bgYellow('Warnings:') + '\n\n' + result.warnings.join('\n') + '\n');
+    console.log('\n' + chalk.bgYellow.black('Warnings:') + '\n\n' + result.warnings.join('\n') + '\n');
   } else if (result.errors.length) {
     console.log('');
   }
 
   if (result.errors.length) {
-    console.error(chalk.bgRed('Errors:') + '\n\n' + result.errors.join('\n') + '\n');
+    console.error(chalk.bgRed.black('Errors:') + '\n\n' + result.errors.join('\n') + '\n');
   }
 
   if (result.suggestions.length) {
-    console.error(chalk.bgCyanBright('Suggestions:') + '\n\n' + result.suggestions.join('\n') + '\n');
+    console.error(chalk.bgCyanBright.black('Suggestions:') + '\n\n' + result.suggestions.join('\n') + '\n');
+  }
+
+  const workspaceSuccess = /** @type {const} */ ([
+    ...Object.entries(result.workspaceSuccess),
+    ...(result.workspaceSuccess[ROOT] === undefined ? [] : /** @type {const} */ ([['root', result.workspaceSuccess[ROOT]]])),
+  ]);
+
+  if (verbose && workspaceSuccess.length) {
+    if (result.errors.length === 0 && workspaceSuccess.length === 1 && result.workspaceSuccess[ROOT]) {
+      console.log(chalk.bgGreen.black('Successful!') + '\n');
+    } else {
+      const success = workspaceSuccess.filter(([, value]) => value);
+      const failure = workspaceSuccess.filter(([, value]) => !value);
+
+      if (success.length) {
+        console.log(chalk.bgGreen.black('Successful workspaces:') + ' ' + success.map(([key]) => key).join(', ') + '\n');
+      }
+      if (failure.length) {
+        console.log(chalk.bgRed.black('Unsuccessful workspaces:') + ' ' + failure.map(([key]) => key).join(', ') + '\n');
+      }
+    }
   }
 
   if (result.errors.length) {
