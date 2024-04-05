@@ -67,6 +67,7 @@ Use [installed-check-core](https://github.com/voxpelli/node-installed-check-core
   * `--no-include-workspace-root` – excludes the workspace root package. Negated equivalent of npm's [`--include-workspace-root`](https://docs.npmjs.com/cli/v10/commands/npm-run-script#include-workspace-root)
   * `--no-workspaces` – excludes workspace packages. Negated equivalent of npm's [`--workspaces`](https://docs.npmjs.com/cli/v10/commands/npm-run-script#workspaces)
   * `--workspace=ARG` / `-w ARG` – excludes all workspace packages not matching these names / paths. Equivalent to npm's [`--workspace` / `-w`](https://docs.npmjs.com/cli/v10/commands/npm-run-script#workspace)
+  * `--workspace-ignore=ARG` – xcludes the specified paths from workspace lookup. (Supports globs)
 
 ### Additional command line options
 
