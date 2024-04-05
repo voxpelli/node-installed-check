@@ -16,14 +16,14 @@ const cli = meow(`
   Defaults to current folder and to perform all checks.
 
   Checks
-    -e, --engine-check    Override default checks and explicitly request an engine range check.
-    -p, --peer-check      Override default checks and explicitly request a peer dependency range check.
-    -c, --version-check   Override default checks and explicitly request a check of installed versions.
+    -e, --engine-check    Override default checks and explicitly request an engine range check
+    -p, --peer-check      Override default checks and explicitly request a peer dependency range check
+    -c, --version-check   Override default checks and explicitly request a check of installed versions
 
   Check options
-    -i ARG, --ignore=ARG  Excludes the named dependency from non-version checks. (Supports globs)
-    -d, --ignore-dev      Excludes dev dependencies from non-version checks.
-    -s, --strict          Treat warnings as errors.
+    -i ARG, --ignore=ARG  Excludes the named dependency from non-version checks.(Supports globs)
+    -d, --ignore-dev      Excludes dev dependencies from non-version checks
+    -s, --strict          Treat warnings as errors
 
   Workspace options
     --no-include-workspace-root  Will exclude the workspace root package
@@ -32,9 +32,9 @@ const cli = meow(`
 
   Options
     --debug        Prints debug info
-    --help         Print this help and exits.
-    --version      Prints current version and exits.
-    -v, --verbose  Shows warnings.
+    --help         Print this help and exits
+    --version      Prints current version and exits
+    -v, --verbose  Shows warnings
 
   Examples
     $ installed-check
