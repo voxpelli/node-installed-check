@@ -25,6 +25,9 @@ const cli = meow(`
     -d, --ignore-dev      Excludes dev dependencies from non-version checks
     -s, --strict          Treat warnings as errors
 
+  Fix options
+    --fix  Tries to apply all suggestions and write them back to disk
+
   Workspace options
     --no-include-workspace-root  Will exclude the workspace root package
     --no-workspaces              Will exclude workspace packages
@@ -45,6 +48,7 @@ const cli = meow(`
     engineCheck: { shortFlag: 'e', type: 'boolean' },
     engineIgnore: { type: 'string', isMultiple: true },
     engineNoDev: { type: 'boolean' },
+    fix: { type: 'boolean' },
     ignore: { shortFlag: 'i', type: 'string', isMultiple: true },
     ignoreDev: { shortFlag: 'd', type: 'boolean' },
     includeWorkspaceRoot: { type: 'boolean', 'default': true },
@@ -69,6 +73,7 @@ const {
   engineCheck,
   engineIgnore, // deprecated
   engineNoDev, // deprecated
+  fix = false,
   includeWorkspaceRoot,
   peerCheck,
   strict,
@@ -129,7 +134,7 @@ if (debug) {
 }
 
 try {
-  const result = await installedCheck(checks, lookupOptions, checkOptions);
+  const result = await installedCheck(checks, lookupOptions, { ...checkOptions, fix });
 
   if (verbose && result.warnings.length) {
     console.log('\n' + chalk.bgYellow.black('Warnings:') + '\n\n' + result.warnings.join('\n') + '\n');

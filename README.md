@@ -62,6 +62,9 @@ Use [installed-check-core](https://github.com/voxpelli/node-installed-check-core
 * `--ignore-dev` / `-d` – if set then dev dependencies won't be included in the non-version checks.
 * `--strict` / `-s` – treats warnings as errors
 
+## Fix options
+  * `--fix` – tries to apply all suggestions and write them back to disk
+
 ## Workspace options
 
   * `--no-include-workspace-root` – excludes the workspace root package. Negated equivalent of npm's [`--include-workspace-root`](https://docs.npmjs.com/cli/v10/commands/npm-run-script#include-workspace-root)
