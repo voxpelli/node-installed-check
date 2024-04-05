@@ -29,6 +29,7 @@ const cli = meow(`
     --no-include-workspace-root  Will exclude the workspace root package
     --no-workspaces              Will exclude workspace packages
     -w ARG, --workspace=ARG      Excludes all workspace packages not matching these names / paths
+    --workspace-ignore=ARG       Excludes the specified paths from workspace lookup. (Supports globs)
 
   Options
     --debug        Prints debug info
@@ -52,6 +53,7 @@ const cli = meow(`
     verbose: { shortFlag: 'v', type: 'boolean' },
     versionCheck: { shortFlag: 'c', type: 'boolean' },
     workspace: { shortFlag: 'w', type: 'string', isMultiple: true },
+    workspaceIgnore: { type: 'string', isMultiple: true },
     workspaces: { type: 'boolean', 'default': true },
   },
   importMeta: import.meta,
@@ -73,6 +75,7 @@ const {
   verbose,
   versionCheck,
   workspace,
+  workspaceIgnore,
   workspaces,
 } = cli.flags;
 
@@ -101,6 +104,7 @@ let checks = [
 /** @type {import('installed-check-core').LookupOptions} */
 const lookupOptions = {
   cwd: cli.input[0],
+  ignorePaths: workspaceIgnore,
   includeWorkspaceRoot,
   skipWorkspaces: !workspaces,
   workspace,
