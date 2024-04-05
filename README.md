@@ -53,7 +53,7 @@ Use [installed-check-core](https://github.com/voxpelli/node-installed-check-core
 ## Checks
 
 * `--engine-check` / `-e` – if set `installed-check` will check that the installed modules doesn't have stricter [`engines`](https://docs.npmjs.com/cli/v10/configuring-npm/package-json#engines) ranges than those  in the `package.json` and suggests an alternative requirement if they do. If set, the default checks will be overriden.
-* `--peer-check` / `-e` – if set `installed-check` will check that the installed modules doesn't have stricter [`peerDependencies`](https://docs.npmjs.com/cli/v10/configuring-npm/package-json#peerdependencies) ranges than those in the `package.json` and suggests an alternative requirement if they do. If set, the default checks will be overriden.
+* `--peer-check` / `-p` – if set `installed-check` will check that the installed modules doesn't have stricter [`peerDependencies`](https://docs.npmjs.com/cli/v10/configuring-npm/package-json#peerdependencies) ranges than those in the `package.json` and suggests an alternative requirement if they do. If set, the default checks will be overriden.
 * `--version-check` / `-c` – if set `installed-check` will check that the installed modules comply with the version requirements set for them the `package.json`. If set, the default checks will be overriden.
 
 ## Check options
