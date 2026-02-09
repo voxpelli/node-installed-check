@@ -1,10 +1,14 @@
 /* eslint-disable no-console, unicorn/no-process-exit */
 
+import { resolve } from 'node:path';
 import { createRequire } from 'node:module';
 import chalk from 'chalk';
 import { formatHelpMessage, peowly } from 'peowly';
 import { messageWithCauses, stackWithCauses } from 'pony-cause';
 import { installedCheck, ROOT } from 'installed-check-core';
+import resolveWorkspaceRootPkg from 'resolve-workspace-root';
+
+const { resolveWorkspaceRootAsync } = resolveWorkspaceRootPkg;
 
 // createRequire is needed to load package.json in ESM context
 // @ts-expect-error - TS doesn't recognize that require is used below
@@ -14,6 +18,19 @@ const pkg = require('./package.json');
 const EXIT_CODE_ERROR_RESULT = 1;
 const EXIT_CODE_INVALID_INPUT = 2;
 const EXIT_CODE_UNEXPECTED_ERROR = 4;
+
+/**
+ * Log a debug message to stderr if debug mode is enabled
+ *
+ * @param {boolean | undefined} debug
+ * @param {string} label
+ * @param {string} message
+ */
+function debugLog (debug, label, message) {
+  if (debug) {
+    console.error(chalk.blue(label + ':') + ' ' + message);
+  }
+}
 
 const baseFlags = /** @satisfies {Record<string, import('peowly').AnyFlag>} */ ({
   debug: {
@@ -93,6 +110,12 @@ const workspaceFlags = /** @satisfies {Record<string, import('peowly').AnyFlag &
     description: 'Excludes the workspace root package',
     listGroup: 'Workspace options',
   },
+  'no-parent-workspace': {
+    type: 'boolean',
+    'default': false,
+    description: 'Disables detection and use of parent workspace root for module resolution',
+    listGroup: 'Workspace options',
+  },
   'no-workspaces': {
     type: 'boolean',
     'default': false,
@@ -149,7 +172,7 @@ const cli = peowly({
 });
 
 if (cli.input.length > 1) {
-  console.error(chalk.bgRed('Invalid input:') + ` Can only handle a single folder path, but received ${cli.input.length} paths: "${cli.input.join('", "')}"` + '\n');
+  console.error(chalk.bgRed('Invalid input:') + \` Can only handle a single folder path, but received \${cli.input.length} paths: "\${cli.input.join('", '")}"\` + '\n');
   process.exit(EXIT_CODE_INVALID_INPUT);
 }
 
@@ -164,6 +187,7 @@ const {
 } = cli.flags;
 
 const includeWorkspaceRoot = !cli.flags['no-include-workspace-root'];
+const parentWorkspace = !cli.flags['no-parent-workspace'];
 const workspaces = !cli.flags['no-workspaces'];
 
 // TODO: These flags require type casting because peowly's TypedFlag utility type doesn't properly
@@ -198,21 +222,72 @@ let checks = [
   ...versionCheck ? /** @type {const} */ (['version']) : [],
 ];
 
-/** @type {import('installed-check-core').LookupOptions} */
+// Detect if we're in a workspace within a larger monorepo
+// If so, use the parent workspace root to enable access to parent's node_modules
+const requestedCwd = resolve(cli.input[0] || process.cwd());
+
+let resolvedCwd = requestedCwd;
+let workspaceFilter = workspace;
+let resolvedIncludeWorkspaceRoot = includeWorkspaceRoot;
+
+// Only detect parent workspace if:
+// - User hasn't explicitly opted out with --no-parent-workspace
+// - User hasn't provided explicit workspace filters (which would be incompatible)
+if (parentWorkspace && !workspace?.length) {
+  debugLog(debug, 'Parent workspace detection', 'Attempting to resolve parent workspace root');
+
+  const parentWorkspaceRoot = await resolveWorkspaceRootAsync(requestedCwd);
+
+  if (parentWorkspaceRoot) {
+    debugLog(debug, 'Parent workspace detection', 'Found parent workspace root: ' + parentWorkspaceRoot);
+  } else {
+    debugLog(debug, 'Parent workspace detection', 'No parent workspace root found');
+  }
+
+  // If we found a parent workspace root and it's different from the requested path
+  if (parentWorkspaceRoot && parentWorkspaceRoot !== requestedCwd) {
+    debugLog(debug, 'Parent workspace detection', 'Parent workspace root differs from requested path');
+
+    // Use the parent workspace root as the cwd
+    resolvedCwd = parentWorkspaceRoot;
+
+    // Filter to only the requested workspace
+    workspaceFilter = [requestedCwd];
+
+    // Don't include the parent workspace root itself in checks
+    resolvedIncludeWorkspaceRoot = false;
+
+    /** @type {string[]} */
+    const reasons = [];
+    if (requestedCwd !== process.cwd()) {
+      reasons.push('path was provided as argument');
+    }
+    if (workspaces) {
+      reasons.push('--workspaces flag is set');
+    }
+
+    debugLog(debug, 'Parent workspace detection', \`Using parent workspace root because \${reasons.join(' and ')}\`);
+  } else {
+    debugLog(debug, 'Parent workspace detection', 'Parent workspace root is same as requested path or not found');
+  }
+}
+
 const lookupOptions = {
-  cwd: cli.input[0],
-  ignorePaths: workspaceIgnore,
-  includeWorkspaceRoot,
-  skipWorkspaces: !workspaces,
-  workspace,
+  cwd: resolvedCwd,
+  ...workspaceFilter ? { workspace: workspaceFilter } : {},
+  includeWorkspaceRoot: resolvedIncludeWorkspaceRoot,
+  workspaceIgnore,
+  workspaces,
 };
 
-/** @type {import('installed-check-core').InstalledCheckOptions} */
-const checkOptions = {
-  noDev: ignoreDev,
-  ignore,
-  strict,
-};
+if (debug) {
+  console.error(chalk.blue('Effective options:'));
+  console.error('  cwd:', lookupOptions.cwd);
+  console.error('  workspace filter:', workspaceFilter || '(none)');
+  console.error('  includeWorkspaceRoot:', lookupOptions.includeWorkspaceRoot);
+  console.error('  workspaceIgnore:', lookupOptions.workspaceIgnore || '(none)');
+  console.error('  workspaces:', lookupOptions.workspaces);
+}
 
 if (checks.length === 0) {
   checks = ['engine', 'peer', 'version'];
@@ -220,13 +295,13 @@ if (checks.length === 0) {
 
 if (debug) {
   const { inspect } = await import('node:util');
-  console.log(chalk.blue('Checks:') + ' ' + inspect(checks, { colors: true, compact: true }));
-  console.log(chalk.blue('Lookup options:') + ' ' + inspect(lookupOptions, { colors: true, compact: true }));
-  console.log(chalk.blue('Check options:') + ' ' + inspect(checkOptions, { colors: true, compact: true }));
+  debugLog(debug, 'Checks', inspect(checks, { colors: true, compact: true }));
+  debugLog(debug, 'Lookup options', inspect(lookupOptions, { colors: true, compact: true }));
+  debugLog(debug, 'Check options', inspect({ fix, ignore, ignoreDev }, { colors: true, compact: true }));
 }
 
 try {
-  const result = await installedCheck(checks, lookupOptions, { ...checkOptions, fix });
+  const result = await installedCheck(checks, lookupOptions, { fix, ignore, ignoreDev, strict });
 
   if (verbose && result.warnings.length) {
     console.log('\n' + chalk.bgYellow.black('Warnings:') + '\n\n' + result.warnings.join('\n') + '\n');
