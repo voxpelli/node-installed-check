@@ -8,7 +8,7 @@ import { exec } from 'node:child_process';
 import { promisify } from 'node:util';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
-import { extractExpectedOutput, normalizeOutput } from '../lib/test-readme.js';
+import { extractExpectedOutput, normalizeOutput } from './test-readme.js';
 
 const execAsync = promisify(exec);
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -28,11 +28,14 @@ async function run (command) {
     const { stderr, stdout } = await execAsync(command, { cwd: rootDir });
     return { code: 0, output: stdout + stderr, stderr, stdout };
   } catch (/** @type {any} */ err) {
+    const errCode = /** @type {number} */ (err.code || 1);
+    const errStdout = /** @type {string} */ (err.stdout || '');
+    const errStderr = /** @type {string} */ (err.stderr || '');
     return {
-      code: err.code || 1,
-      output: (err.stdout || '') + (err.stderr || ''),
-      stderr: err.stderr || '',
-      stdout: err.stdout || '',
+      code: errCode,
+      output: errStdout + errStderr,
+      stderr: errStderr,
+      stdout: errStdout,
     };
   }
 }
@@ -53,7 +56,8 @@ async function test (name, fn) {
     // eslint-disable-next-line no-console
     console.log('✗');
     // eslint-disable-next-line no-console
-    console.error(`    Error: ${err.message}`);
+    const errMessage = /** @type {string} */ (err.message || 'Unknown error');
+    console.error(`    Error: ${errMessage}`);
     failed = true;
   }
 }
@@ -120,7 +124,7 @@ await test('workspace-a output matches README expected output', async () => {
 
 await test('debug output shows parent workspace detection', async () => {
   const expectedDebug = await extractExpectedOutput(
-    join(rootDir, 'examples/monorepo/README.md'),
+    join(rootDir, 'examples/monorepo/packages/workspace-a/README.md'),
     'DEBUG OUTPUT'
   );
   assert(expectedDebug !== undefined, 'Could not extract expected debug output from README');
@@ -165,7 +169,7 @@ await test('should work with --no-parent-workspace flag', async () => {
 await test('running from monorepo root matches README expected output', async () => {
   const expectedOutput = await extractExpectedOutput(
     join(rootDir, 'examples/monorepo/README.md'),
-    'ROOT OUTPUT'
+    'EXPECTED OUTPUT'
   );
   assert(expectedOutput !== undefined, 'Could not extract expected root output from README');
 

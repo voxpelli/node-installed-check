@@ -174,7 +174,7 @@ if (parentWorkspace && !workspace?.length) {
 
 /** @type {import('installed-check-core').LookupOptions} */
 const lookupOptions = {
-  cwd: resolvedCwd !== requestedCwd ? resolvedCwd : undefined,
+  cwd: resolvedCwd,
   ignorePaths: workspaceIgnore,
   includeWorkspaceRoot: resolvedIncludeWorkspaceRoot,
   skipWorkspaces: !workspaces,
