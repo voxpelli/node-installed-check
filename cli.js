@@ -154,6 +154,7 @@ if (parentWorkspace && !workspace?.length && !cli.input[0]) {
     console.error(chalk.blue('Parent workspace detection:') + ' Parent workspace root is same as requested cwd, not applying');
   }
 } else if (debug) {
+  /** @type {string[]} */
   const reasons = [];
   if (!parentWorkspace) reasons.push('--no-parent-workspace flag is set');
   if (workspace?.length) reasons.push('explicit workspace filters provided');
