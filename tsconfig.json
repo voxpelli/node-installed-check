@@ -2,6 +2,8 @@
   "extends": "@voxpelli/tsconfig/node18.json",
   "files": [
     "cli-wrapper.cjs",
-    "cli.js"
+    "cli.js",
+    "lib/test-readme.js",
+    "test/integration.js"
   ]
 }

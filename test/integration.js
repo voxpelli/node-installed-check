@@ -5,13 +5,10 @@
  */
 
 import { exec } from 'node:child_process';
-import { readFile } from 'node:fs/promises';
 import { promisify } from 'node:util';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
-import { unified } from 'unified';
-import remarkParse from 'remark-parse';
-import { visit } from 'unist-util-visit';
+import { extractExpectedOutput, normalizeOutput } from '../lib/test-readme.js';
 
 const execAsync = promisify(exec);
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -30,7 +27,7 @@ async function run (command) {
   try {
     const { stderr, stdout } = await execAsync(command, { cwd: rootDir });
     return { code: 0, output: stdout + stderr, stderr, stdout };
-  } catch (err) {
+  } catch (/** @type {any} */ err) {
     return {
       code: err.code || 1,
       output: (err.stdout || '') + (err.stderr || ''),
@@ -38,54 +35,6 @@ async function run (command) {
       stdout: err.stdout || '',
     };
   }
-}
-
-/**
- * Extract expected output from README markdown using unified/remark
- *
- * @param {string} readmePath
- * @param {string} marker
- * @returns {Promise<string | undefined>}
- */
-async function extractExpectedOutput (readmePath, marker = 'EXPECTED OUTPUT') {
-  const content = await readFile(readmePath, 'utf8');
-  const tree = unified().use(remarkParse).parse(content);
-
-  let foundMarker = false;
-  let codeBlockContent;
-
-  visit(tree, (node) => {
-    // Look for HTML comments marking the section
-    if (node.type === 'html' && node.value.includes(`BEGIN ${marker}`)) {
-      foundMarker = true;
-      return;
-    }
-
-    if (node.type === 'html' && node.value.includes(`END ${marker}`)) {
-      foundMarker = false;
-      return;
-    }
-
-    // If we're in the marked section and find a code block, extract it
-    if (foundMarker && node.type === 'code') {
-      codeBlockContent = node.value;
-      return 'skip';
-    }
-  });
-
-  return codeBlockContent;
-}
-
-/**
- * Normalize output for comparison (remove paths, etc)
- *
- * @param {string} output
- * @returns {string}
- */
-function normalizeOutput (output) {
-  return output
-    .replaceAll(/\/\S+\/examples\//g, '/absolute/path/to/examples/')
-    .trim();
 }
 
 /**
@@ -100,7 +49,7 @@ async function test (name, fn) {
     await fn();
     // eslint-disable-next-line no-console
     console.log('✓');
-  } catch (err) {
+  } catch (/** @type {any} */ err) {
     // eslint-disable-next-line no-console
     console.log('✗');
     // eslint-disable-next-line no-console
@@ -134,7 +83,7 @@ await test('output matches README expected output', async () => {
 
   const result = await run(`node "${cliPath}" examples/basic`);
   const normalizedOutput = normalizeOutput(result.output);
-  const normalizedExpected = normalizeOutput(expectedOutput);
+  const normalizedExpected = normalizeOutput(/** @type {string} */ (expectedOutput));
 
   assert(
     normalizedOutput.includes(normalizedExpected) || normalizedOutput === normalizedExpected,
@@ -161,7 +110,7 @@ await test('workspace-a output matches README expected output', async () => {
 
   const result = await run(`node "${cliPath}" examples/monorepo/packages/workspace-a`);
   const normalizedOutput = normalizeOutput(result.output);
-  const normalizedExpected = normalizeOutput(expectedOutput);
+  const normalizedExpected = normalizeOutput(/** @type {string} */ (expectedOutput));
 
   assert(
     normalizedOutput.includes(normalizedExpected) || normalizedOutput === normalizedExpected,
@@ -210,6 +159,23 @@ await test('should work with --no-parent-workspace flag', async () => {
   assert(
     result.stderr.includes('Skipped'),
     'Expected parent workspace detection to be skipped'
+  );
+});
+
+await test('running from monorepo root matches README expected output', async () => {
+  const expectedOutput = await extractExpectedOutput(
+    join(rootDir, 'examples/monorepo/README.md'),
+    'ROOT OUTPUT'
+  );
+  assert(expectedOutput !== undefined, 'Could not extract expected root output from README');
+
+  const result = await run(`node "${cliPath}" examples/monorepo`);
+  const normalizedOutput = normalizeOutput(result.output);
+  const normalizedExpected = normalizeOutput(/** @type {string} */ (expectedOutput));
+
+  assert(
+    normalizedOutput.includes(normalizedExpected) || normalizedOutput === normalizedExpected,
+    `Output mismatch.\nExpected:\n${normalizedExpected}\n\nActual:\n${normalizedOutput}`
   );
 });
 
