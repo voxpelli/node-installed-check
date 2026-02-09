@@ -118,6 +118,7 @@ const requestedCwd = cli.input[0] || process.cwd();
 
 let resolvedCwd = requestedCwd;
 let workspaceFilter = workspace;
+let resolvedIncludeWorkspaceRoot = includeWorkspaceRoot;
 
 // Only detect parent workspace if:
 // - User hasn't explicitly opted out with --no-parent-workspace
@@ -147,6 +148,9 @@ if (parentWorkspace && !workspace?.length && !cli.input[0]) {
     // Filter to just the current workspace to avoid checking all workspaces in the parent monorepo
     workspaceFilter = [requestedCwd];
 
+    // Don't include the workspace root (parent) in checks, only the filtered workspace
+    resolvedIncludeWorkspaceRoot = false;
+
     if (debug) {
       console.error(chalk.blue('Parent workspace detection:') + ' Using parent workspace root, filtering to current workspace');
     }
@@ -166,7 +170,7 @@ if (parentWorkspace && !workspace?.length && !cli.input[0]) {
 const lookupOptions = {
   cwd: resolvedCwd !== requestedCwd ? resolvedCwd : undefined,
   ignorePaths: workspaceIgnore,
-  includeWorkspaceRoot,
+  includeWorkspaceRoot: resolvedIncludeWorkspaceRoot,
   skipWorkspaces: !workspaces,
   workspace: workspaceFilter,
 };
