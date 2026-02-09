@@ -7,7 +7,7 @@ import { messageWithCauses, stackWithCauses } from 'pony-cause';
 import { installedCheck, ROOT } from 'installed-check-core';
 
 // createRequire is needed to load package.json in ESM context
-// @ts-expect-error - TS doesn't recognize that require is used on the next line
+// @ts-expect-error - TS doesn't recognize that require is used below
 const require = createRequire(import.meta.url);
 const pkg = require('./package.json');
 
@@ -98,7 +98,7 @@ const flags = {
   strict: {
     'short': 's',
     type: 'boolean',
-    description: 'Treats warnings as errors',
+    description: 'Treat warnings as errors',
     listGroup: 'Check options',
   },
   verbose: {
