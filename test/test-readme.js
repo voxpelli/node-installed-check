@@ -47,7 +47,7 @@ export async function extractExpectedOutput (readmePath, marker = 'EXPECTED OUTP
 }
 
 /**
- * Normalize output for comparison (remove absolute paths, etc)
+ * Normalize output for comparison (remove absolute paths, normalize line endings, etc)
  *
  * @param {string} output - The output to normalize
  * @returns {string} Normalized output
@@ -55,5 +55,6 @@ export async function extractExpectedOutput (readmePath, marker = 'EXPECTED OUTP
 export function normalizeOutput (output) {
   return output
     .replaceAll(/\/\S+\/examples\//g, '/absolute/path/to/examples/')
+    .replaceAll('\r\n', '\n') // Normalize Windows line endings to Unix
     .trim();
 }

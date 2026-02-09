@@ -11,12 +11,13 @@ const execAsync = promisify(exec);
  * Run a command and return stdout/stderr
  *
  * @param {string} command
- * @param {string} cwd
+ * @param {object} options
+ * @param {string} options.cwd
  * @returns {Promise<{code: number, output: string, stderr: string, stdout: string}>}
  */
-export async function run (command, cwd) {
+export async function run (command, options) {
   try {
-    const { stderr, stdout } = await execAsync(command, { cwd });
+    const { stderr, stdout } = await execAsync(command, options);
     return { code: 0, output: stdout + stderr, stderr, stdout };
   } catch (/** @type {any} */ err) {
     const errCode = /** @type {number} */ (err.code || 1);
