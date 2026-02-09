@@ -121,25 +121,28 @@ const requestedCwd = cli.input[0] || process.cwd();
  * @returns {Promise<string|undefined>}
  */
 async function findUltimateWorkspaceRoot (dir) {
-  let currentRoot = await resolveWorkspaceRootAsync(dir);
+  const currentRoot = await resolveWorkspaceRootAsync(dir);
   if (!currentRoot) return;
 
+  // Keep looking for parent workspace roots by checking parent directories
+  let checkDir = pathModule.dirname(currentRoot);
   let ultimateRoot = currentRoot;
 
-  // Keep looking for parent workspace roots
-  while (currentRoot) {
-    // Check if the current root is itself part of a parent workspace
-    // We need to check from the parent of the current root
-    const grandparentDir = pathModule.resolve(currentRoot, '..', '..');
-    const parentRoot = await resolveWorkspaceRootAsync(grandparentDir);
+  while (checkDir && checkDir !== ultimateRoot) {
+    const parentRoot = await resolveWorkspaceRootAsync(checkDir);
 
-    // If we found a parent root and it contains our current root, keep going
-    if (parentRoot && parentRoot !== currentRoot && currentRoot.startsWith(parentRoot + pathModule.sep)) {
+    // If we found a parent workspace root that contains our current root
+    if (parentRoot && ultimateRoot.startsWith(parentRoot + pathModule.sep)) {
       ultimateRoot = parentRoot;
-      currentRoot = parentRoot;
+      checkDir = pathModule.dirname(parentRoot);
     } else {
-      // No more parents, we found the ultimate root
-      break;
+      // Move up one directory and continue searching
+      const newCheckDir = pathModule.dirname(checkDir);
+      if (newCheckDir === checkDir) {
+        // Reached filesystem root
+        break;
+      }
+      checkDir = newCheckDir;
     }
   }
 
@@ -166,7 +169,7 @@ if (parentWorkspaceRoot && parentWorkspaceRoot !== requestedCwd) {
 
 /** @type {import('installed-check-core').LookupOptions} */
 const lookupOptions = {
-  cwd: resolvedCwd !== process.cwd() ? resolvedCwd : undefined,
+  cwd: resolvedCwd !== requestedCwd ? resolvedCwd : undefined,
   ignorePaths: workspaceIgnore,
   includeWorkspaceRoot,
   skipWorkspaces: !workspaces,
