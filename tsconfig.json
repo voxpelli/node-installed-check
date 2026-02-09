@@ -3,6 +3,7 @@
   "files": [
     "cli-wrapper.cjs",
     "cli.js",
+    "test/helpers.js",
     "test/test-readme.js",
     "test/integration.js"
   ]
