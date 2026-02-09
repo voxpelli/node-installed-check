@@ -11,11 +11,11 @@ const execAsync = promisify(exec);
  * Run a command and return stdout/stderr
  *
  * @param {string} command
- * @param {object} options
- * @param {string} options.cwd
+ * @param {string | {cwd: string}} cwdOrOptions - Either a string cwd path or options object
  * @returns {Promise<{code: number, output: string, stderr: string, stdout: string}>}
  */
-export async function run (command, options) {
+export async function run (command, cwdOrOptions) {
+  const options = typeof cwdOrOptions === 'string' ? { cwd: cwdOrOptions } : cwdOrOptions;
   try {
     const { stderr, stdout } = await execAsync(command, options);
     return { code: 0, output: stdout + stderr, stderr, stdout };
