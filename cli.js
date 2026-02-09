@@ -1,66 +1,122 @@
 /* eslint-disable no-console, unicorn/no-process-exit */
 
+import { createRequire } from 'node:module';
 import chalk from 'chalk';
-import meow from 'meow';
+import { formatHelpMessage, peowly } from 'peowly';
 import { messageWithCauses, stackWithCauses } from 'pony-cause';
 import { installedCheck, ROOT } from 'installed-check-core';
+
+// @ts-ignore - TypeScript incorrectly reports this as unused
+const require = createRequire(import.meta.url);
+const pkg = require('./package.json');
 
 const EXIT_CODE_ERROR_RESULT = 1;
 const EXIT_CODE_INVALID_INPUT = 2;
 const EXIT_CODE_UNEXPECTED_ERROR = 4;
 
-const cli = meow(`
-  Usage
-    $ installed-check <path to module folder>
-
-  Defaults to current folder and to perform all checks.
-
-  Checks
-    -e, --engine-check    Override default checks and explicitly request an engine range check
-    -p, --peer-check      Override default checks and explicitly request a peer dependency range check
-    -c, --version-check   Override default checks and explicitly request a check of installed versions
-
-  Check options
-    -i ARG, --ignore=ARG  Excludes the named dependency from non-version checks.(Supports globs)
-    -d, --ignore-dev      Excludes dev dependencies from non-version checks
-    -s, --strict          Treat warnings as errors
-
-  Fix options
-    --fix  Tries to apply all suggestions and write them back to disk
-
-  Workspace options
-    --no-include-workspace-root  Will exclude the workspace root package
-    --no-workspaces              Will exclude workspace packages
-    -w ARG, --workspace=ARG      Excludes all workspace packages not matching these names / paths
-    --workspace-ignore=ARG       Excludes the specified paths from workspace lookup. (Supports globs)
-
-  Options
-    --debug        Prints debug info
-    --help         Print this help and exits
-    --version      Prints current version and exits
-    -v, --verbose  Shows warnings
-
-  Examples
-    $ installed-check
-`, {
-  flags: {
-    debug: { type: 'boolean' },
-    engineCheck: { shortFlag: 'e', type: 'boolean' },
-    engineIgnore: { type: 'string', isMultiple: true },
-    engineNoDev: { type: 'boolean' },
-    fix: { type: 'boolean' },
-    ignore: { shortFlag: 'i', type: 'string', isMultiple: true },
-    ignoreDev: { shortFlag: 'd', type: 'boolean' },
-    includeWorkspaceRoot: { type: 'boolean', 'default': true },
-    peerCheck: { shortFlag: 'p', type: 'boolean' },
-    strict: { shortFlag: 's', type: 'boolean' },
-    verbose: { shortFlag: 'v', type: 'boolean' },
-    versionCheck: { shortFlag: 'c', type: 'boolean' },
-    workspace: { shortFlag: 'w', type: 'string', isMultiple: true },
-    workspaceIgnore: { type: 'string', isMultiple: true },
-    workspaces: { type: 'boolean', 'default': true },
+/** @satisfies {import('peowly').AnyFlags} */
+const flags = {
+  debug: {
+    type: 'boolean',
+    description: 'Prints debug info',
   },
-  importMeta: import.meta,
+  engineCheck: {
+    'short': 'e',
+    type: 'boolean',
+    description: 'Override default checks and explicitly request an engine range check',
+    listGroup: 'Checks',
+  },
+  engineIgnore: {
+    type: 'string',
+    multiple: true,
+    description: 'Deprecated: use --ignore instead',
+  },
+  engineNoDev: {
+    type: 'boolean',
+    description: 'Deprecated: use --ignore-dev instead',
+  },
+  fix: {
+    type: 'boolean',
+    description: 'Tries to apply all suggestions and write them back to disk',
+    listGroup: 'Fix options',
+  },
+  ignore: {
+    'short': 'i',
+    type: 'string',
+    multiple: true,
+    description: 'Excludes the named dependency from non-version checks (Supports globs)',
+    listGroup: 'Check options',
+  },
+  ignoreDev: {
+    'short': 'd',
+    type: 'boolean',
+    description: 'Excludes dev dependencies from non-version checks',
+    listGroup: 'Check options',
+  },
+  // Note: Using kebab-case for this flag name to support --no-include-workspace-root negation
+  // with parseArgs allowNegative option. CamelCase names don't work with negation in parseArgs.
+  'include-workspace-root': {
+    type: 'boolean',
+    description: 'Will exclude the workspace root package when set to false',
+    listGroup: 'Workspace options',
+  },
+  peerCheck: {
+    'short': 'p',
+    type: 'boolean',
+    description: 'Override default checks and explicitly request a peer dependency range check',
+    listGroup: 'Checks',
+  },
+  strict: {
+    'short': 's',
+    type: 'boolean',
+    description: 'Treats warnings as errors',
+    listGroup: 'Check options',
+  },
+  verbose: {
+    'short': 'v',
+    type: 'boolean',
+    description: 'Shows warnings',
+  },
+  versionCheck: {
+    'short': 'c',
+    type: 'boolean',
+    description: 'Override default checks and explicitly request a check of installed versions',
+    listGroup: 'Checks',
+  },
+  workspace: {
+    'short': 'w',
+    type: 'string',
+    multiple: true,
+    description: 'Excludes all workspace packages not matching these names / paths',
+    listGroup: 'Workspace options',
+  },
+  workspaceIgnore: {
+    type: 'string',
+    multiple: true,
+    description: 'Excludes the specified paths from workspace lookup (Supports globs)',
+    listGroup: 'Workspace options',
+  },
+  workspaces: {
+    type: 'boolean',
+    description: 'Will exclude workspace packages when set to false',
+    listGroup: 'Workspace options',
+  },
+};
+
+const cli = peowly({
+  options: flags,
+  help: formatHelpMessage('installed-check', {
+    flags,
+    usage: '<path to module folder>',
+    examples: [
+      '',
+    ],
+  }),
+  name: 'installed-check',
+  pkg,
+  // @ts-ignore - allowNegative is supported by parseArgs but not in peowly types yet
+  // TODO: Consider upstreaming to peowly - add allowNegative to ExtendedParseArgsConfig type definition
+  allowNegative: true,
 });
 
 if (cli.input.length > 1) {
@@ -71,23 +127,27 @@ if (cli.input.length > 1) {
 const {
   debug,
   engineCheck,
-  engineIgnore, // deprecated
-  engineNoDev, // deprecated
   fix = false,
-  includeWorkspaceRoot,
   peerCheck,
   strict,
   verbose,
   versionCheck,
-  workspace,
-  workspaceIgnore,
-  workspaces,
+  workspaces = true,
 } = cli.flags;
 
-let {
-  ignore,
-  ignoreDev,
-} = cli.flags;
+const includeWorkspaceRoot = cli.flags['include-workspace-root'] ?? true;
+/** @type {string[] | undefined} */
+const engineIgnore = /** @type {any} */ (cli.flags.engineIgnore); // deprecated
+/** @type {boolean | undefined} */
+const engineNoDev = /** @type {any} */ (cli.flags.engineNoDev); // deprecated
+/** @type {string[] | undefined} */
+let ignore = /** @type {any} */ (cli.flags.ignore);
+/** @type {boolean | undefined} */
+let ignoreDev = /** @type {any} */ (cli.flags.ignoreDev);
+/** @type {string[] | undefined} */
+const workspace = /** @type {any} */ (cli.flags.workspace);
+/** @type {string[] | undefined} */
+const workspaceIgnore = /** @type {any} */ (cli.flags.workspaceIgnore);
 
 // Handle deprecated flags
 if (engineIgnore?.length) {
