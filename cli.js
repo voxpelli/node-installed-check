@@ -15,58 +15,45 @@ const EXIT_CODE_ERROR_RESULT = 1;
 const EXIT_CODE_INVALID_INPUT = 2;
 const EXIT_CODE_UNEXPECTED_ERROR = 4;
 
-// TODO [engine:node@>=22.4.0]: Remove preprocessArgs and negationFlags, use allowNegative option in peowly
-// Preprocess args to handle --no- prefix for boolean flags (needed for Node.js <22.4.0)
-// This manually implements the allowNegative behavior for compatibility with older Node.js versions
-// The allowNegative option was added to parseArgs in Node.js 22.4.0 (June 2024)
-const negationFlags = new Map();
-
-/**
- * @param {string[]} args
- * @returns {string[]}
- */
-function preprocessArgs (args) {
-  const processed = [];
-  for (const arg of args) {
-    if (arg === '--no-workspaces') {
-      // Track that workspaces should be false, but don't add to args
-      // (parseArgs will default to undefined, then we apply negation)
-      negationFlags.set('workspaces', false);
-    } else if (arg === '--no-include-workspace-root') {
-      negationFlags.set('include-workspace-root', false);
-    } else {
-      processed.push(arg);
-    }
-  }
-  return processed;
-}
-
-/** @satisfies {import('peowly').AnyFlags} */
-const flags = {
+const baseFlags = /** @satisfies {Record<string, import('peowly').AnyFlag>} */ ({
   debug: {
     type: 'boolean',
+    'default': false,
     description: 'Prints debug info',
   },
+  verbose: {
+    'short': 'v',
+    type: 'boolean',
+    'default': false,
+    description: 'Shows warnings',
+  },
+});
+
+const checkFlags = /** @satisfies {Record<string, import('peowly').AnyFlag & { listGroup: 'Checks' }>} */ ({
   engineCheck: {
     'short': 'e',
     type: 'boolean',
+    'default': false,
     description: 'Override default checks and explicitly request an engine range check',
     listGroup: 'Checks',
   },
-  engineIgnore: {
-    type: 'string',
-    multiple: true,
-    description: 'Deprecated: use --ignore instead',
-  },
-  engineNoDev: {
+  peerCheck: {
+    'short': 'p',
     type: 'boolean',
-    description: 'Deprecated: use --ignore-dev instead',
+    'default': false,
+    description: 'Override default checks and explicitly request a peer dependency range check',
+    listGroup: 'Checks',
   },
-  fix: {
+  versionCheck: {
+    'short': 'c',
     type: 'boolean',
-    description: 'Tries to apply all suggestions and write them back to disk',
-    listGroup: 'Fix options',
+    'default': false,
+    description: 'Override default checks and explicitly request a check of installed versions',
+    listGroup: 'Checks',
   },
+});
+
+const checkOptionFlags = /** @satisfies {Record<string, import('peowly').AnyFlag & { listGroup: 'Check options' }>} */ ({
   ignore: {
     'short': 'i',
     type: 'string',
@@ -77,40 +64,40 @@ const flags = {
   ignoreDev: {
     'short': 'd',
     type: 'boolean',
+    'default': false,
     description: 'Excludes dev dependencies from non-version checks',
     listGroup: 'Check options',
-  },
-  // Note: Using kebab-case for this flag name to support --no-include-workspace-root negation
-  // with parseArgs allowNegative option. CamelCase names don't work with negation in parseArgs.
-  // TODO: File issue with peowly/Node.js about improving allowNegative to support camelCase flag
-  // negation (e.g., includeWorkspaceRoot should work with --no-include-workspace-root)
-  'include-workspace-root': {
-    type: 'boolean',
-    description: 'Will exclude the workspace root package when set to false',
-    listGroup: 'Workspace options',
-  },
-  peerCheck: {
-    'short': 'p',
-    type: 'boolean',
-    description: 'Override default checks and explicitly request a peer dependency range check',
-    listGroup: 'Checks',
   },
   strict: {
     'short': 's',
     type: 'boolean',
+    'default': false,
     description: 'Treat warnings as errors',
     listGroup: 'Check options',
   },
-  verbose: {
-    'short': 'v',
+});
+
+const fixFlags = /** @satisfies {Record<string, import('peowly').AnyFlag & { listGroup: 'Fix options' }>} */ ({
+  fix: {
     type: 'boolean',
-    description: 'Shows warnings',
+    'default': false,
+    description: 'Tries to apply all suggestions and write them back to disk',
+    listGroup: 'Fix options',
   },
-  versionCheck: {
-    'short': 'c',
+});
+
+const workspaceFlags = /** @satisfies {Record<string, import('peowly').AnyFlag & { listGroup: 'Workspace options' }>} */ ({
+  'no-include-workspace-root': {
     type: 'boolean',
-    description: 'Override default checks and explicitly request a check of installed versions',
-    listGroup: 'Checks',
+    'default': false,
+    description: 'Excludes the workspace root package',
+    listGroup: 'Workspace options',
+  },
+  'no-workspaces': {
+    type: 'boolean',
+    'default': false,
+    description: 'Excludes workspace packages',
+    listGroup: 'Workspace options',
   },
   workspace: {
     'short': 'w',
@@ -125,11 +112,29 @@ const flags = {
     description: 'Excludes the specified paths from workspace lookup (Supports globs)',
     listGroup: 'Workspace options',
   },
-  workspaces: {
-    type: 'boolean',
-    description: 'Include workspace packages (use --no-workspaces to exclude)',
-    listGroup: 'Workspace options',
+});
+
+const deprecatedFlags = /** @satisfies {Record<string, import('peowly').AnyFlag>} */ ({
+  engineIgnore: {
+    type: 'string',
+    multiple: true,
+    description: 'Deprecated: use --ignore instead',
   },
+  engineNoDev: {
+    type: 'boolean',
+    'default': false,
+    description: 'Deprecated: use --ignore-dev instead',
+  },
+});
+
+/** @satisfies {import('peowly').AnyFlags} */
+const flags = {
+  ...baseFlags,
+  ...checkFlags,
+  ...checkOptionFlags,
+  ...fixFlags,
+  ...workspaceFlags,
+  ...deprecatedFlags,
 };
 
 const cli = peowly({
@@ -143,19 +148,7 @@ const cli = peowly({
   }),
   name: 'installed-check',
   pkg,
-  // TODO [engine:node@>=22.4.0]: Add allowNegative: true and remove preprocessArgs/negationFlags
-  // allowNegative option (for --no- prefix) is only available in Node.js >=22.4.0
-  // Since we support >=18.6.0, we use preprocessArgs to handle --no- flags manually
-  args: preprocessArgs(process.argv.slice(2)),
 });
-
-// Apply negation flags manually (TODO [engine:node@>=22.4.0]: Remove this block)
-if (negationFlags.has('workspaces')) {
-  cli.flags.workspaces = false;
-}
-if (negationFlags.has('include-workspace-root')) {
-  cli.flags['include-workspace-root'] = false;
-}
 
 if (cli.input.length > 1) {
   console.error(chalk.bgRed('Invalid input:') + ` Can only handle a single folder path, but received ${cli.input.length} paths: "${cli.input.join('", "')}"` + '\n');
@@ -165,15 +158,15 @@ if (cli.input.length > 1) {
 const {
   debug,
   engineCheck,
-  fix = false,
+  fix,
   peerCheck,
   strict,
   verbose,
   versionCheck,
-  workspaces = true,
 } = cli.flags;
 
-const includeWorkspaceRoot = cli.flags['include-workspace-root'] ?? true;
+const includeWorkspaceRoot = !cli.flags['no-include-workspace-root'];
+const workspaces = !cli.flags['no-workspaces'];
 
 // Accessing multiple-value and deprecated flags that aren't in the typed interface
 const engineIgnore = /** @type {string[] | undefined} */ (/** @type {unknown} */ (cli.flags.engineIgnore)); // deprecated
