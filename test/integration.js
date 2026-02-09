@@ -55,8 +55,8 @@ async function test (name, fn) {
   } catch (/** @type {any} */ err) {
     // eslint-disable-next-line no-console
     console.log('✗');
-    // eslint-disable-next-line no-console
     const errMessage = /** @type {string} */ (err.message || 'Unknown error');
+    // eslint-disable-next-line no-console
     console.error(`    Error: ${errMessage}`);
     failed = true;
   }
