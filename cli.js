@@ -1,13 +1,30 @@
 /* eslint-disable no-console, unicorn/no-process-exit */
 
+import { resolve } from 'node:path';
 import chalk from 'chalk';
 import meow from 'meow';
 import { messageWithCauses, stackWithCauses } from 'pony-cause';
 import { installedCheck, ROOT } from 'installed-check-core';
+import resolveWorkspaceRootPkg from 'resolve-workspace-root';
+
+const { resolveWorkspaceRootAsync } = resolveWorkspaceRootPkg;
 
 const EXIT_CODE_ERROR_RESULT = 1;
 const EXIT_CODE_INVALID_INPUT = 2;
 const EXIT_CODE_UNEXPECTED_ERROR = 4;
+
+/**
+ * Log a debug message to stderr if debug mode is enabled
+ *
+ * @param {boolean | undefined} debug
+ * @param {string} label
+ * @param {string} message
+ */
+function debugLog (debug, label, message) {
+  if (debug) {
+    console.error(chalk.blue(label + ':') + ' ' + message);
+  }
+}
 
 const cli = meow(`
   Usage
@@ -30,6 +47,7 @@ const cli = meow(`
 
   Workspace options
     --no-include-workspace-root  Will exclude the workspace root package
+    --no-parent-workspace        Will not detect and use parent workspace root for module resolution
     --no-workspaces              Will exclude workspace packages
     -w ARG, --workspace=ARG      Excludes all workspace packages not matching these names / paths
     --workspace-ignore=ARG       Excludes the specified paths from workspace lookup. (Supports globs)
@@ -52,6 +70,7 @@ const cli = meow(`
     ignore: { shortFlag: 'i', type: 'string', isMultiple: true },
     ignoreDev: { shortFlag: 'd', type: 'boolean' },
     includeWorkspaceRoot: { type: 'boolean', 'default': true },
+    parentWorkspace: { type: 'boolean', 'default': true },
     peerCheck: { shortFlag: 'p', type: 'boolean' },
     strict: { shortFlag: 's', type: 'boolean' },
     verbose: { shortFlag: 'v', type: 'boolean' },
@@ -75,6 +94,7 @@ const {
   engineNoDev, // deprecated
   fix = false,
   includeWorkspaceRoot,
+  parentWorkspace,
   peerCheck,
   strict,
   verbose,
@@ -106,13 +126,59 @@ let checks = [
   ...versionCheck ? /** @type {const} */ (['version']) : [],
 ];
 
+// Detect if we're in a workspace within a larger monorepo
+// If so, use the parent workspace root to enable access to parent's node_modules
+const requestedCwd = resolve(cli.input[0] || process.cwd());
+
+let resolvedCwd = requestedCwd;
+let workspaceFilter = workspace;
+let resolvedIncludeWorkspaceRoot = includeWorkspaceRoot;
+
+// Only detect parent workspace if:
+// - User hasn't explicitly opted out with --no-parent-workspace
+// - User hasn't provided explicit workspace filters (which would be incompatible)
+if (parentWorkspace && !workspace?.length) {
+  debugLog(debug, 'Parent workspace detection', 'Attempting to resolve parent workspace root');
+
+  const parentWorkspaceRoot = await resolveWorkspaceRootAsync(requestedCwd);
+
+  if (parentWorkspaceRoot) {
+    debugLog(debug, 'Parent workspace detection', 'Found parent workspace root: ' + parentWorkspaceRoot);
+  } else {
+    debugLog(debug, 'Parent workspace detection', 'No parent workspace root found');
+  }
+
+  // If we found a parent workspace root different from our requested cwd,
+  // we're in a workspace situation
+  if (parentWorkspaceRoot && parentWorkspaceRoot !== requestedCwd) {
+    // Use the parent workspace root as cwd to get access to its node_modules
+    resolvedCwd = parentWorkspaceRoot;
+
+    // Filter to just the current workspace to avoid checking all workspaces in the parent monorepo
+    workspaceFilter = [requestedCwd];
+
+    // Don't include the workspace root (parent) in checks, only the filtered workspace
+    resolvedIncludeWorkspaceRoot = false;
+
+    debugLog(debug, 'Parent workspace detection', 'Using parent workspace root, filtering to current workspace');
+  } else if (parentWorkspaceRoot === requestedCwd) {
+    debugLog(debug, 'Parent workspace detection', 'Parent workspace root is same as requested cwd, not applying');
+  }
+} else if (debug) {
+  /** @type {string[]} */
+  const reasons = [];
+  if (!parentWorkspace) reasons.push('--no-parent-workspace flag is set');
+  if (workspace?.length) reasons.push('explicit workspace filters provided');
+  debugLog(debug, 'Parent workspace detection', 'Skipped (' + reasons.join(', ') + ')');
+}
+
 /** @type {import('installed-check-core').LookupOptions} */
 const lookupOptions = {
-  cwd: cli.input[0],
+  cwd: resolvedCwd,
   ignorePaths: workspaceIgnore,
-  includeWorkspaceRoot,
+  includeWorkspaceRoot: resolvedIncludeWorkspaceRoot,
   skipWorkspaces: !workspaces,
-  workspace,
+  workspace: workspaceFilter,
 };
 
 /** @type {import('installed-check-core').InstalledCheckOptions} */
@@ -128,9 +194,9 @@ if (checks.length === 0) {
 
 if (debug) {
   const { inspect } = await import('node:util');
-  console.log(chalk.blue('Checks:') + ' ' + inspect(checks, { colors: true, compact: true }));
-  console.log(chalk.blue('Lookup options:') + ' ' + inspect(lookupOptions, { colors: true, compact: true }));
-  console.log(chalk.blue('Check options:') + ' ' + inspect(checkOptions, { colors: true, compact: true }));
+  debugLog(debug, 'Checks', inspect(checks, { colors: true, compact: true }));
+  debugLog(debug, 'Lookup options', inspect(lookupOptions, { colors: true, compact: true }));
+  debugLog(debug, 'Check options', inspect(checkOptions, { colors: true, compact: true }));
 }
 
 try {

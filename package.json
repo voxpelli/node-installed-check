@@ -23,8 +23,10 @@
     "check:type-coverage": "type-coverage --detail --strict --at-least 95",
     "check": "run-p check:*",
     "prepare": "husky",
-    "test-ci": "run-s check:installed-check",
-    "test": "run-s check"
+    "test:integration": "node --test test/integration.js",
+    "test:examples:install": "cd examples/basic && npm install && cd ../monorepo && npm install && cd ../..",
+    "test-ci": "run-s test:examples:install test:integration check:installed-check",
+    "test": "run-s check test:examples:install test:integration"
   },
   "keywords": [
     "cli",
@@ -47,6 +49,7 @@
     "installed-check-core": "^8.3.0",
     "meow": "^13.0.0",
     "pony-cause": "^2.1.10",
+    "resolve-workspace-root": "^2.0.1",
     "version-guard": "^1.1.1"
   },
   "devDependencies": {
@@ -66,7 +69,10 @@
     "husky": "^9.0.11",
     "knip": "^5.13.0",
     "npm-run-all2": "^6.1.2",
+    "remark-parse": "^11.0.0",
     "type-coverage": "^2.28.2",
-    "typescript": "~5.4.5"
+    "typescript": "~5.4.5",
+    "unified": "^11.0.5",
+    "unist-util-visit": "^5.1.0"
   }
 }
