@@ -1,13 +1,11 @@
 /* eslint-disable no-console, unicorn/no-process-exit */
 
-import pathModule from 'node:path';
 import chalk from 'chalk';
 import meow from 'meow';
 import { messageWithCauses, stackWithCauses } from 'pony-cause';
 import { installedCheck, ROOT } from 'installed-check-core';
-import resolveWorkspaceRootPkg from 'resolve-workspace-root';
 
-const { resolveWorkspaceRootAsync } = resolveWorkspaceRootPkg;
+import { findUltimateWorkspaceRoot } from './lib/utils.js';
 
 const EXIT_CODE_ERROR_RESULT = 1;
 const EXIT_CODE_INVALID_INPUT = 2;
@@ -113,41 +111,6 @@ let checks = [
 // Detect if we're in a workspace within a larger monorepo
 // If so, use the ultimate parent workspace root to enable access to parent's node_modules
 const requestedCwd = cli.input[0] || process.cwd();
-
-/**
- * Find the ultimate parent workspace root by walking up the directory tree
- *
- * @param {string} dir
- * @returns {Promise<string|undefined>}
- */
-async function findUltimateWorkspaceRoot (dir) {
-  const currentRoot = await resolveWorkspaceRootAsync(dir);
-  if (!currentRoot) return;
-
-  // Keep looking for parent workspace roots by checking parent directories
-  let checkDir = pathModule.dirname(currentRoot);
-  let ultimateRoot = currentRoot;
-
-  while (checkDir && checkDir !== ultimateRoot) {
-    const parentRoot = await resolveWorkspaceRootAsync(checkDir);
-
-    // If we found a parent workspace root that contains our current root
-    if (parentRoot && ultimateRoot.startsWith(parentRoot + pathModule.sep)) {
-      ultimateRoot = parentRoot;
-      checkDir = pathModule.dirname(parentRoot);
-    } else {
-      // Move up one directory and continue searching
-      const newCheckDir = pathModule.dirname(checkDir);
-      if (newCheckDir === checkDir) {
-        // Reached filesystem root
-        break;
-      }
-      checkDir = newCheckDir;
-    }
-  }
-
-  return ultimateRoot;
-}
 
 const parentWorkspaceRoot = await findUltimateWorkspaceRoot(requestedCwd);
 

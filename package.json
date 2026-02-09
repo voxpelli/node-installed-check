@@ -13,7 +13,8 @@
   },
   "files": [
     "cli-wrapper.cjs",
-    "cli.js"
+    "cli.js",
+    "lib/utils.js"
   ],
   "scripts": {
     "check:lint": "eslint --report-unused-disable-directives .",
