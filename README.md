@@ -73,6 +73,21 @@ Use [installed-check-core](https://github.com/voxpelli/node-installed-check-core
   * `--workspace=ARG` / `-w ARG` – excludes all workspace packages not matching these names / paths. Equivalent to npm's [`--workspace` / `-w`](https://docs.npmjs.com/cli/v10/commands/npm-run-script#workspace)
   * `--workspace-ignore=ARG` – xcludes the specified paths from workspace lookup. (Supports globs)
 
+### Nested workspace support
+
+When running `installed-check` within a workspace that is part of a larger monorepo (e.g., when using `git subtree` or working in a nested monorepo structure), the tool will automatically detect the parent workspace root and include modules from the parent's `node_modules` directory. This ensures that dependencies hosted at the monorepo root level are properly detected and checked.
+
+For example, if you have a structure like:
+```
+/parent-monorepo
+  /node_modules (shared dependencies)
+  /packages
+    /my-workspace
+      /package.json
+```
+
+Running `installed-check` in `/parent-monorepo/packages/my-workspace` will automatically detect the parent monorepo and check dependencies from both the workspace and the parent's `node_modules`.
+
 ### Additional command line options
 
 * `--debug` – prints debug info
