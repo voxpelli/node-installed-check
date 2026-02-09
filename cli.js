@@ -56,7 +56,7 @@ const cli = meow(`
     ignore: { shortFlag: 'i', type: 'string', isMultiple: true },
     ignoreDev: { shortFlag: 'd', type: 'boolean' },
     includeWorkspaceRoot: { type: 'boolean', 'default': true },
-    noParentWorkspace: { type: 'boolean', 'default': false },
+    parentWorkspace: { type: 'boolean', 'default': true },
     peerCheck: { shortFlag: 'p', type: 'boolean' },
     strict: { shortFlag: 's', type: 'boolean' },
     verbose: { shortFlag: 'v', type: 'boolean' },
@@ -80,7 +80,7 @@ const {
   engineNoDev, // deprecated
   fix = false,
   includeWorkspaceRoot,
-  noParentWorkspace,
+  parentWorkspace,
   peerCheck,
   strict,
   verbose,
@@ -123,8 +123,20 @@ let workspaceFilter = workspace;
 // - User hasn't explicitly opted out with --no-parent-workspace
 // - User hasn't provided explicit workspace filters (which would be incompatible)
 // - User hasn't provided a custom cwd path (cli.input[0])
-if (!noParentWorkspace && !workspace?.length && !cli.input[0]) {
+if (parentWorkspace && !workspace?.length && !cli.input[0]) {
+  if (debug) {
+    console.log(chalk.blue('Parent workspace detection:') + ' Attempting to resolve parent workspace root');
+  }
+
   const parentWorkspaceRoot = await resolveWorkspaceRootAsync(requestedCwd);
+
+  if (debug) {
+    if (parentWorkspaceRoot) {
+      console.log(chalk.blue('Parent workspace detection:') + ' Found parent workspace root: ' + parentWorkspaceRoot);
+    } else {
+      console.log(chalk.blue('Parent workspace detection:') + ' No parent workspace root found');
+    }
+  }
 
   // If we found a parent workspace root different from our requested cwd,
   // we're in a workspace situation
@@ -134,7 +146,19 @@ if (!noParentWorkspace && !workspace?.length && !cli.input[0]) {
 
     // Filter to just the current workspace to avoid checking all workspaces in the parent monorepo
     workspaceFilter = [requestedCwd];
+
+    if (debug) {
+      console.log(chalk.blue('Parent workspace detection:') + ' Using parent workspace root, filtering to current workspace');
+    }
+  } else if (debug && parentWorkspaceRoot === requestedCwd) {
+    console.log(chalk.blue('Parent workspace detection:') + ' Parent workspace root is same as requested cwd, not applying');
   }
+} else if (debug) {
+  const reasons = [];
+  if (!parentWorkspace) reasons.push('--no-parent-workspace flag is set');
+  if (workspace?.length) reasons.push('explicit workspace filters provided');
+  if (cli.input[0]) reasons.push('custom cwd path provided');
+  console.log(chalk.blue('Parent workspace detection:') + ' Skipped (' + reasons.join(', ') + ')');
 }
 
 /** @type {import('installed-check-core').LookupOptions} */
