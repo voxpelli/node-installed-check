@@ -114,37 +114,35 @@ const workspaceFlags = /** @satisfies {Record<string, import('peowly').AnyFlag &
   },
 });
 
-const deprecatedFlags = /** @satisfies {Record<string, import('peowly').AnyFlag>} */ ({
+const deprecatedFlags = /** @satisfies {Record<string, import('peowly').AnyFlag & { listGroup: 'Deprecated options' }>} */ ({
   engineIgnore: {
     type: 'string',
     multiple: true,
     description: 'Deprecated: use --ignore instead',
+    listGroup: 'Deprecated options',
   },
   engineNoDev: {
     type: 'boolean',
     'default': false,
     description: 'Deprecated: use --ignore-dev instead',
+    listGroup: 'Deprecated options',
   },
 });
 
-/** @satisfies {import('peowly').AnyFlags} */
-const flags = {
+const flags = /** @satisfies {import('peowly').AnyFlags} */ ({
   ...baseFlags,
   ...checkFlags,
   ...checkOptionFlags,
   ...fixFlags,
   ...workspaceFlags,
   ...deprecatedFlags,
-};
+});
 
 const cli = peowly({
   options: flags,
   help: formatHelpMessage('installed-check', {
     flags,
     usage: '<path to module folder>',
-    examples: [
-      '',
-    ],
   }),
   name: 'installed-check',
   pkg,
