@@ -6,7 +6,8 @@ import { formatHelpMessage, peowly } from 'peowly';
 import { messageWithCauses, stackWithCauses } from 'pony-cause';
 import { installedCheck, ROOT } from 'installed-check-core';
 
-// @ts-ignore - TypeScript incorrectly reports this as unused
+// createRequire is needed to load package.json in ESM context
+// @ts-expect-error - TS doesn't recognize that require is used on the next line
 const require = createRequire(import.meta.url);
 const pkg = require('./package.json');
 
@@ -114,7 +115,7 @@ const cli = peowly({
   }),
   name: 'installed-check',
   pkg,
-  // @ts-ignore - allowNegative is supported by parseArgs but not in peowly types yet
+  // @ts-expect-error - allowNegative is supported by parseArgs but not in peowly types yet
   // TODO: Consider upstreaming to peowly - add allowNegative to ExtendedParseArgsConfig type definition
   allowNegative: true,
 });
@@ -136,18 +137,14 @@ const {
 } = cli.flags;
 
 const includeWorkspaceRoot = cli.flags['include-workspace-root'] ?? true;
-/** @type {string[] | undefined} */
-const engineIgnore = /** @type {any} */ (cli.flags.engineIgnore); // deprecated
-/** @type {boolean | undefined} */
-const engineNoDev = /** @type {any} */ (cli.flags.engineNoDev); // deprecated
-/** @type {string[] | undefined} */
-let ignore = /** @type {any} */ (cli.flags.ignore);
-/** @type {boolean | undefined} */
-let ignoreDev = /** @type {any} */ (cli.flags.ignoreDev);
-/** @type {string[] | undefined} */
-const workspace = /** @type {any} */ (cli.flags.workspace);
-/** @type {string[] | undefined} */
-const workspaceIgnore = /** @type {any} */ (cli.flags.workspaceIgnore);
+
+// Accessing multiple-value and deprecated flags that aren't in the typed interface
+const engineIgnore = /** @type {string[] | undefined} */ (/** @type {unknown} */ (cli.flags.engineIgnore)); // deprecated
+const engineNoDev = /** @type {boolean | undefined} */ (/** @type {unknown} */ (cli.flags.engineNoDev)); // deprecated
+let ignore = /** @type {string[] | undefined} */ (/** @type {unknown} */ (cli.flags.ignore));
+let ignoreDev = /** @type {boolean | undefined} */ (/** @type {unknown} */ (cli.flags.ignoreDev));
+const workspace = /** @type {string[] | undefined} */ (/** @type {unknown} */ (cli.flags.workspace));
+const workspaceIgnore = /** @type {string[] | undefined} */ (/** @type {unknown} */ (cli.flags.workspaceIgnore));
 
 // Handle deprecated flags
 if (engineIgnore?.length) {
