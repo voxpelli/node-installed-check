@@ -38,10 +38,12 @@ node cli-wrapper.cjs examples/monorepo
 Errors:
 
 root: meow: Narrower "engines.node" is needed: >=20.0.0
+workspace-a: knip: Narrower "engines.node" is needed: >=18.18.0
 
 Suggestions:
 
 root: Combined "engines.node" needs to be narrower: >=20.0.0
+workspace-a: Combined "engines.node" needs to be narrower: >=18.18.0
 ```
 <!-- END EXPECTED OUTPUT -->
 

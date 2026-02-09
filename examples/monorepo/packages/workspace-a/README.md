@@ -6,7 +6,7 @@ This workspace is part of the monorepo example and demonstrates automatic parent
 
 This workspace:
 - Depends on `chalk@^4.0.0` (installed in parent's node_modules)
-- Has a clean configuration with no errors
+- Has `knip@^5.0.0` in devDependencies (requires Node >=18.18.0, narrower than package's >=18.6.0)
 
 The parent monorepo root has a `meow` dependency with an engine issue, but that issue does NOT appear when checking this workspace because `includeWorkspaceRoot` is set to `false` when using parent workspace detection.
 
@@ -31,17 +31,23 @@ When you run `installed-check` in this workspace:
 1. **Parent detection**: Automatically detects the parent monorepo at `examples/monorepo`
 2. **Module resolution**: Uses the parent's `node_modules` for finding dependencies
 3. **Filtered checking**: Only checks this workspace package, not the parent (includeWorkspaceRoot: false)
-4. **Validation**: Passes cleanly - the root's meow issue is excluded
+4. **Validation**: Shows knip engine issue - but the parent's meow issue is correctly excluded
 
 ## Example Output
 
 <!-- BEGIN EXPECTED OUTPUT -->
 ```
+Errors:
 
+workspace-a: knip: Narrower "engines.node" is needed: >=18.18.0
+
+Suggestions:
+
+workspace-a: Combined "engines.node" needs to be narrower: >=18.18.0
 ```
 <!-- END EXPECTED OUTPUT -->
 
-The empty output indicates success - this workspace has no issues, and the parent's issue is excluded.
+This shows the knip engine requirement issue in this workspace. Note that the parent's meow issue does NOT appear because `includeWorkspaceRoot: false` excludes the parent from checks.
 
 ### Debug Output
 

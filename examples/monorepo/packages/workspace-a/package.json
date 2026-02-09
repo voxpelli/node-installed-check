@@ -6,6 +6,9 @@
   "dependencies": {
     "chalk": "^4.0.0"
   },
+  "devDependencies": {
+    "knip": "^5.0.0"
+  },
   "engines": {
     "node": ">=18.6.0"
   }
