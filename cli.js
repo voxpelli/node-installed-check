@@ -4,9 +4,7 @@ import chalk from 'chalk';
 import meow from 'meow';
 import { messageWithCauses, stackWithCauses } from 'pony-cause';
 import { installedCheck, ROOT } from 'installed-check-core';
-import resolveWorkspaceRootPkg from 'resolve-workspace-root';
-
-const { resolveWorkspaceRootAsync } = resolveWorkspaceRootPkg;
+import { resolveWorkspaceRootAsync } from 'resolve-workspace-root';
 
 const EXIT_CODE_ERROR_RESULT = 1;
 const EXIT_CODE_INVALID_INPUT = 2;
