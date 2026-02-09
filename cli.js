@@ -56,6 +56,8 @@ const flags = {
   },
   // Note: Using kebab-case for this flag name to support --no-include-workspace-root negation
   // with parseArgs allowNegative option. CamelCase names don't work with negation in parseArgs.
+  // TODO: File issue with peowly/Node.js about improving allowNegative to support camelCase flag
+  // negation (e.g., includeWorkspaceRoot should work with --no-include-workspace-root)
   'include-workspace-root': {
     type: 'boolean',
     description: 'Will exclude the workspace root package when set to false',
@@ -116,7 +118,8 @@ const cli = peowly({
   name: 'installed-check',
   pkg,
   // @ts-expect-error - allowNegative is supported by parseArgs but not in peowly types yet
-  // TODO: Consider upstreaming to peowly - add allowNegative to ExtendedParseArgsConfig type definition
+  // TODO: Create peowly issue to add allowNegative (and other ParseArgsConfig options like
+  // allowPositionals) to ExtendedParseArgsConfig type definition so they're properly typed
   allowNegative: true,
 });
 
