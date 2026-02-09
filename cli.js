@@ -4,6 +4,9 @@ import chalk from 'chalk';
 import meow from 'meow';
 import { messageWithCauses, stackWithCauses } from 'pony-cause';
 import { installedCheck, ROOT } from 'installed-check-core';
+import resolveWorkspaceRootPkg from 'resolve-workspace-root';
+
+const { resolveWorkspaceRootAsync } = resolveWorkspaceRootPkg;
 
 const EXIT_CODE_ERROR_RESULT = 1;
 const EXIT_CODE_INVALID_INPUT = 2;
@@ -106,13 +109,34 @@ let checks = [
   ...versionCheck ? /** @type {const} */ (['version']) : [],
 ];
 
+// Detect if we're in a workspace within a larger monorepo
+// If so, use the parent workspace root to enable access to parent's node_modules
+const requestedCwd = cli.input[0] || process.cwd();
+const parentWorkspaceRoot = await resolveWorkspaceRootAsync(requestedCwd);
+
+let resolvedCwd = requestedCwd;
+let workspaceFilter = workspace;
+
+// If we found a parent workspace root different from our requested cwd,
+// we're in a nested workspace situation
+if (parentWorkspaceRoot && parentWorkspaceRoot !== requestedCwd) {
+  // Use the parent workspace root as cwd to get access to its node_modules
+  resolvedCwd = parentWorkspaceRoot;
+
+  // If no explicit workspace filter was provided, filter to just the current workspace
+  // to avoid checking all workspaces in the parent monorepo
+  if (!workspace || workspace.length === 0) {
+    workspaceFilter = [requestedCwd];
+  }
+}
+
 /** @type {import('installed-check-core').LookupOptions} */
 const lookupOptions = {
-  cwd: cli.input[0],
+  cwd: resolvedCwd !== process.cwd() ? resolvedCwd : undefined,
   ignorePaths: workspaceIgnore,
   includeWorkspaceRoot,
   skipWorkspaces: !workspaces,
-  workspace,
+  workspace: workspaceFilter,
 };
 
 /** @type {import('installed-check-core').InstalledCheckOptions} */

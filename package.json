@@ -47,6 +47,7 @@
     "installed-check-core": "^8.3.0",
     "meow": "^13.0.0",
     "pony-cause": "^2.1.10",
+    "resolve-workspace-root": "^2.0.1",
     "version-guard": "^1.1.1"
   },
   "devDependencies": {
