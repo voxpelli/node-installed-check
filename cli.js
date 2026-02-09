@@ -172,7 +172,7 @@ const cli = peowly({
 });
 
 if (cli.input.length > 1) {
-  console.error(chalk.bgRed('Invalid input:') + \` Can only handle a single folder path, but received \${cli.input.length} paths: "\${cli.input.join('", '")}"\` + '\n');
+  console.error(chalk.bgRed('Invalid input:') + ` Can only handle a single folder path, but received ${cli.input.length} paths: "${cli.input.join('", "')}"` + '\n');
   process.exit(EXIT_CODE_INVALID_INPUT);
 }
 
@@ -266,7 +266,7 @@ if (parentWorkspace && !workspace?.length) {
       reasons.push('--workspaces flag is set');
     }
 
-    debugLog(debug, 'Parent workspace detection', \`Using parent workspace root because \${reasons.join(' and ')}\`);
+    debugLog(debug, 'Parent workspace detection', `Using parent workspace root because ${reasons.join(' and ')}`);
   } else {
     debugLog(debug, 'Parent workspace detection', 'Parent workspace root is same as requested path or not found');
   }
@@ -289,6 +289,12 @@ if (debug) {
   console.error('  workspaces:', lookupOptions.workspaces);
 }
 
+const checkOptions = {
+  noDev: ignoreDev,
+  ignore,
+  strict,
+};
+
 if (checks.length === 0) {
   checks = ['engine', 'peer', 'version'];
 }
@@ -297,11 +303,11 @@ if (debug) {
   const { inspect } = await import('node:util');
   debugLog(debug, 'Checks', inspect(checks, { colors: true, compact: true }));
   debugLog(debug, 'Lookup options', inspect(lookupOptions, { colors: true, compact: true }));
-  debugLog(debug, 'Check options', inspect({ fix, ignore, ignoreDev }, { colors: true, compact: true }));
+  debugLog(debug, 'Check options', inspect(checkOptions, { colors: true, compact: true }));
 }
 
 try {
-  const result = await installedCheck(checks, lookupOptions, { fix, ignore, ignoreDev, strict });
+  const result = await installedCheck(checks, lookupOptions, { ...checkOptions, fix });
 
   if (verbose && result.warnings.length) {
     console.log('\n' + chalk.bgYellow.black('Warnings:') + '\n\n' + result.warnings.join('\n') + '\n');
