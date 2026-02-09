@@ -12,6 +12,19 @@ const EXIT_CODE_ERROR_RESULT = 1;
 const EXIT_CODE_INVALID_INPUT = 2;
 const EXIT_CODE_UNEXPECTED_ERROR = 4;
 
+/**
+ * Log a debug message to stderr if debug mode is enabled
+ *
+ * @param {boolean | undefined} debug
+ * @param {string} label
+ * @param {string} message
+ */
+function debugLog (debug, label, message) {
+  if (debug) {
+    console.error(chalk.blue(label + ':') + ' ' + message);
+  }
+}
+
 const cli = meow(`
   Usage
     $ installed-check <path to module folder>
@@ -123,20 +136,15 @@ let resolvedIncludeWorkspaceRoot = includeWorkspaceRoot;
 // Only detect parent workspace if:
 // - User hasn't explicitly opted out with --no-parent-workspace
 // - User hasn't provided explicit workspace filters (which would be incompatible)
-// - User hasn't provided a custom cwd path (cli.input[0])
-if (parentWorkspace && !workspace?.length && !cli.input[0]) {
-  if (debug) {
-    console.error(chalk.blue('Parent workspace detection:') + ' Attempting to resolve parent workspace root');
-  }
+if (parentWorkspace && !workspace?.length) {
+  debugLog(debug, 'Parent workspace detection', 'Attempting to resolve parent workspace root');
 
   const parentWorkspaceRoot = await resolveWorkspaceRootAsync(requestedCwd);
 
-  if (debug) {
-    if (parentWorkspaceRoot) {
-      console.error(chalk.blue('Parent workspace detection:') + ' Found parent workspace root: ' + parentWorkspaceRoot);
-    } else {
-      console.error(chalk.blue('Parent workspace detection:') + ' No parent workspace root found');
-    }
+  if (parentWorkspaceRoot) {
+    debugLog(debug, 'Parent workspace detection', 'Found parent workspace root: ' + parentWorkspaceRoot);
+  } else {
+    debugLog(debug, 'Parent workspace detection', 'No parent workspace root found');
   }
 
   // If we found a parent workspace root different from our requested cwd,
@@ -151,19 +159,16 @@ if (parentWorkspace && !workspace?.length && !cli.input[0]) {
     // Don't include the workspace root (parent) in checks, only the filtered workspace
     resolvedIncludeWorkspaceRoot = false;
 
-    if (debug) {
-      console.error(chalk.blue('Parent workspace detection:') + ' Using parent workspace root, filtering to current workspace');
-    }
-  } else if (debug && parentWorkspaceRoot === requestedCwd) {
-    console.error(chalk.blue('Parent workspace detection:') + ' Parent workspace root is same as requested cwd, not applying');
+    debugLog(debug, 'Parent workspace detection', 'Using parent workspace root, filtering to current workspace');
+  } else if (parentWorkspaceRoot === requestedCwd) {
+    debugLog(debug, 'Parent workspace detection', 'Parent workspace root is same as requested cwd, not applying');
   }
 } else if (debug) {
   /** @type {string[]} */
   const reasons = [];
   if (!parentWorkspace) reasons.push('--no-parent-workspace flag is set');
   if (workspace?.length) reasons.push('explicit workspace filters provided');
-  if (cli.input[0]) reasons.push('custom cwd path provided');
-  console.error(chalk.blue('Parent workspace detection:') + ' Skipped (' + reasons.join(', ') + ')');
+  debugLog(debug, 'Parent workspace detection', 'Skipped (' + reasons.join(', ') + ')');
 }
 
 /** @type {import('installed-check-core').LookupOptions} */
@@ -188,9 +193,9 @@ if (checks.length === 0) {
 
 if (debug) {
   const { inspect } = await import('node:util');
-  console.error(chalk.blue('Checks:') + ' ' + inspect(checks, { colors: true, compact: true }));
-  console.error(chalk.blue('Lookup options:') + ' ' + inspect(lookupOptions, { colors: true, compact: true }));
-  console.error(chalk.blue('Check options:') + ' ' + inspect(checkOptions, { colors: true, compact: true }));
+  debugLog(debug, 'Checks', inspect(checks, { colors: true, compact: true }));
+  debugLog(debug, 'Lookup options', inspect(lookupOptions, { colors: true, compact: true }));
+  debugLog(debug, 'Check options', inspect(checkOptions, { colors: true, compact: true }));
 }
 
 try {

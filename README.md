@@ -80,7 +80,6 @@ When running `installed-check` within a workspace that is part of a larger monor
 
 This behavior is automatic when:
 - No explicit workspace filters are provided (`--workspace`)
-- No custom path is specified as a command argument
 - The `--no-parent-workspace` flag is not used
 
 For example, if you have a structure like:
@@ -93,6 +92,8 @@ For example, if you have a structure like:
 ```
 
 Running `installed-check` in `/parent-monorepo/packages/my-workspace` will automatically detect the parent monorepo and check dependencies from both the workspace and the parent's `node_modules`.
+
+You can also explicitly specify a path to a workspace within a monorepo, and parent workspace detection will still work:
 
 To disable this behavior, use the `--no-parent-workspace` flag.
 
