@@ -2,12 +2,11 @@
   "name": "workspace-a",
   "version": "1.0.0",
   "private": true,
-  "description": "Workspace A in monorepo example - intentionally has issues",
+  "description": "Workspace A in monorepo example",
   "dependencies": {
-    "chalk": "^4.0.0",
-    "meow": "^13.0.0"
+    "chalk": "^4.0.0"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.6.0"
   }
 }

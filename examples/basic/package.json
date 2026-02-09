@@ -4,10 +4,8 @@
   "private": true,
   "description": "Basic example for installed-check - intentionally has issues for demonstration",
   "dependencies": {
-    "chalk": "^4.0.0"
-  },
-  "devDependencies": {
-    "meow": "^13.0.0"
+    "chalk": "^4.0.0",
+    "meow": "^14.0.0"
   },
   "engines": {
     "node": ">=18.6.0"

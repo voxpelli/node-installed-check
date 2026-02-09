@@ -4,9 +4,9 @@ This is a simple example showing how `installed-check` works with a basic Node.j
 
 ## What's in This Example
 
-This example uses:
+This example demonstrates a common issue - a dependency (`meow`) has a stricter `engines.node` requirement than the package itself:
 - `chalk@^4.0.0` - A popular terminal coloring library
-- `meow@^13.0.0` - A CLI helper library in devDependencies
+- `meow@^14.0.0` - A CLI helper library (requires Node >=20, but package specifies >=18.6.0)
 
 ## Usage
 
@@ -22,12 +22,14 @@ node cli-wrapper.cjs examples/basic
 
 ## Example Output
 
-This example passes all checks cleanly, demonstrating a correctly configured package.
-
 <!-- BEGIN EXPECTED OUTPUT -->
 ```
+Errors:
 
+meow: Narrower "engines.node" is needed: >=20.0.0
+
+Suggestions:
+
+Combined "engines.node" needs to be narrower: >=20.0.0
 ```
 <!-- END EXPECTED OUTPUT -->
-
-The empty output indicates success - all dependencies are properly installed and configured!

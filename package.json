@@ -23,10 +23,10 @@
     "check:type-coverage": "type-coverage --detail --strict --at-least 95",
     "check": "run-p check:*",
     "prepare": "husky",
-    "test:integration": "node test/integration.js",
+    "test:integration": "node --test test/integration.js",
     "test:examples:install": "cd examples/basic && npm install && cd ../monorepo && npm install && cd ../..",
-    "test-ci": "run-s test:examples:install test:integration check:installed-check",
-    "test": "run-s check test:integration"
+    "test-ci": "run-s test:**",
+    "test": "run-s check test:**"
   },
   "keywords": [
     "cli",

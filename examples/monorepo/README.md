@@ -6,11 +6,11 @@ This example demonstrates how `installed-check` works with monorepo workspaces.
 
 ```
 monorepo/
-├── package.json (workspace root with chalk@^4.0.0 dependency)
+├── package.json (workspace root with chalk@^4.0.0 and meow@^14.0.0 - has engine issue)
 ├── node_modules/ (shared dependencies installed here)
 └── packages/
     ├── workspace-a/
-    │   └── package.json (depends on chalk@^4.0.0, has meow, intentional issue)
+    │   └── package.json (depends on chalk@^4.0.0)
     └── workspace-b/
         └── package.json (depends on chalk@^4.0.0, has typescript in devDeps)
 ```
@@ -19,7 +19,7 @@ monorepo/
 
 ### Running from Monorepo Root
 
-This checks all workspaces at once:
+This checks all workspaces at once including the root:
 
 ```bash
 # From the repository root
@@ -37,11 +37,11 @@ node cli-wrapper.cjs examples/monorepo
 ```
 Errors:
 
-workspace-a: meow: Narrower "engines.node" is needed: >=18.0.0
+root: meow: Narrower "engines.node" is needed: >=20.0.0
 
 Suggestions:
 
-workspace-a: Combined "engines.node" needs to be narrower: >=18.0.0
+root: Combined "engines.node" needs to be narrower: >=20.0.0
 ```
 <!-- END EXPECTED OUTPUT -->
 

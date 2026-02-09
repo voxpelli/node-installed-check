@@ -104,6 +104,14 @@ To disable this behavior, use the `--no-parent-workspace` flag.
 * `--help` / `-h` – prints help and exits
 * `--version` – prints current version and exits
 
+## Examples
+
+The repository includes practical examples demonstrating `installed-check` usage:
+
+* **[Basic Example](examples/basic/README.md)** – Simple project showing engine range validation
+* **[Monorepo Example](examples/monorepo/README.md)** – Workspace root with dependency issues
+* **[Workspace Example](examples/monorepo/packages/workspace-a/README.md)** – Individual workspace with parent workspace detection
+
 ## Similar modules
 
 * [`knip`](https://github.com/webpro/knip) – finds unused files, dependencies and exports in your JavaScript and TypeScript projects – a great companion module to `installed-check`
