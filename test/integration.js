@@ -18,14 +18,14 @@ const cliPath = join(rootDir, 'cli-wrapper.cjs');
 describe('Basic Example', () => {
   it('output matches README expected output', async () => {
     const expectedOutput = await extractExpectedOutput(join(rootDir, 'examples/basic/README.md'));
-    assert.notEqual(expectedOutput, undefined, 'Could not extract expected output from README');
+    assert.ok(expectedOutput !== undefined, 'Could not extract expected output from README');
 
     const result = await run(`node "${cliPath}" examples/basic`, rootDir);
     const normalizedOutput = normalizeOutput(result.output);
     const normalizedExpected = normalizeOutput(/** @type {string} */ (expectedOutput));
 
     assert.ok(
-      normalizedOutput.includes(normalizedExpected) || normalizedOutput === normalizedExpected,
+      normalizedOutput.trim().includes(normalizedExpected.trim()) || normalizedOutput.trim() === normalizedExpected.trim(),
       `Output mismatch.\nExpected:\n${normalizedExpected}\n\nActual:\n${normalizedOutput}`
     );
   });
@@ -51,7 +51,7 @@ describe('Monorepo Example', () => {
     const normalizedExpected = normalizeOutput(/** @type {string} */ (expectedOutput));
 
     assert.ok(
-      normalizedOutput.includes(normalizedExpected) || normalizedOutput === normalizedExpected,
+      normalizedOutput.trim().includes(normalizedExpected.trim()) || normalizedOutput.trim() === normalizedExpected.trim(),
       `Output mismatch.\nExpected:\n${normalizedExpected}\n\nActual:\n${normalizedOutput}`
     );
   });
@@ -61,7 +61,7 @@ describe('Monorepo Example', () => {
       join(rootDir, 'examples/monorepo/packages/workspace-a/README.md'),
       'DEBUG OUTPUT'
     );
-    assert.notEqual(expectedDebug, undefined, 'Could not extract expected debug output from README');
+    assert.ok(expectedDebug !== undefined, 'Could not extract expected debug output from README');
 
     const result = await run(`node "${cliPath}" --debug examples/monorepo/packages/workspace-a`, rootDir);
 
@@ -105,14 +105,14 @@ describe('Monorepo Example', () => {
       join(rootDir, 'examples/monorepo/README.md'),
       'EXPECTED OUTPUT'
     );
-    assert.notEqual(expectedOutput, undefined, 'Could not extract expected root output from README');
+    assert.ok(expectedOutput !== undefined, 'Could not extract expected root output from README');
 
     const result = await run(`node "${cliPath}" examples/monorepo`, rootDir);
     const normalizedOutput = normalizeOutput(result.output);
     const normalizedExpected = normalizeOutput(/** @type {string} */ (expectedOutput));
 
     assert.ok(
-      normalizedOutput.includes(normalizedExpected) || normalizedOutput === normalizedExpected,
+      normalizedOutput.trim().includes(normalizedExpected.trim()) || normalizedOutput.trim() === normalizedExpected.trim(),
       `Output mismatch.\nExpected:\n${normalizedExpected}\n\nActual:\n${normalizedOutput}`
     );
   });
