@@ -25,7 +25,7 @@
     "prepare": "husky",
     "test:integration": "node --test test/integration.js",
     "test:examples:install": "cd examples/basic && npm install && cd ../monorepo && npm install && cd ../..",
-    "test-ci": "run-s test:*",
+    "test-ci": "run-s test:examples:install test:integration check:installed-check",
     "test": "run-s check test:*"
   },
   "keywords": [
