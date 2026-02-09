@@ -268,8 +268,14 @@ if (parentWorkspace && !workspace?.length) {
 
     debugLog(debug, 'Parent workspace detection', `Using parent workspace root because ${reasons.join(' and ')}`);
   } else {
-    debugLog(debug, 'Parent workspace detection', 'Parent workspace root is same as requested path or not found');
+    debugLog(debug, 'Parent workspace detection', 'Parent workspace root is same as requested cwd, not applying');
   }
+} else if (debug) {
+  /** @type {string[]} */
+  const reasons = [];
+  if (!parentWorkspace) reasons.push('--no-parent-workspace flag is set');
+  if (workspace?.length) reasons.push('explicit workspace filters provided');
+  debugLog(debug, 'Parent workspace detection', 'Skipped (' + reasons.join(', ') + ')');
 }
 
 const lookupOptions = {
