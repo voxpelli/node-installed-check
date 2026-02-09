@@ -1,0 +1,15 @@
+{
+  "name": "example-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Monorepo example for installed-check parent workspace detection",
+  "workspaces": [
+    "packages/*"
+  ],
+  "dependencies": {
+    "chalk": "^5.3.0"
+  },
+  "engines": {
+    "node": ">=18.6.0"
+  }
+}

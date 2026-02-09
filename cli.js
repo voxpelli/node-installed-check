@@ -1,5 +1,6 @@
 /* eslint-disable no-console, unicorn/no-process-exit */
 
+import { resolve } from 'node:path';
 import chalk from 'chalk';
 import meow from 'meow';
 import { messageWithCauses, stackWithCauses } from 'pony-cause';
@@ -127,7 +128,7 @@ let checks = [
 
 // Detect if we're in a workspace within a larger monorepo
 // If so, use the parent workspace root to enable access to parent's node_modules
-const requestedCwd = cli.input[0] || process.cwd();
+const requestedCwd = resolve(cli.input[0] || process.cwd());
 
 let resolvedCwd = requestedCwd;
 let workspaceFilter = workspace;
