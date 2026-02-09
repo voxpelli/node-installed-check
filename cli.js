@@ -15,6 +15,32 @@ const EXIT_CODE_ERROR_RESULT = 1;
 const EXIT_CODE_INVALID_INPUT = 2;
 const EXIT_CODE_UNEXPECTED_ERROR = 4;
 
+// TODO [engine:node@>=22.4.0]: Remove preprocessArgs and negationFlags, use allowNegative option in peowly
+// Preprocess args to handle --no- prefix for boolean flags (needed for Node.js <22.4.0)
+// This manually implements the allowNegative behavior for compatibility with older Node.js versions
+// The allowNegative option was added to parseArgs in Node.js 22.4.0 (June 2024)
+const negationFlags = new Map();
+
+/**
+ * @param {string[]} args
+ * @returns {string[]}
+ */
+function preprocessArgs (args) {
+  const processed = [];
+  for (const arg of args) {
+    if (arg === '--no-workspaces') {
+      // Track that workspaces should be false, but don't add to args
+      // (parseArgs will default to undefined, then we apply negation)
+      negationFlags.set('workspaces', false);
+    } else if (arg === '--no-include-workspace-root') {
+      negationFlags.set('include-workspace-root', false);
+    } else {
+      processed.push(arg);
+    }
+  }
+  return processed;
+}
+
 /** @satisfies {import('peowly').AnyFlags} */
 const flags = {
   debug: {
@@ -101,7 +127,7 @@ const flags = {
   },
   workspaces: {
     type: 'boolean',
-    description: 'Will exclude workspace packages when set to false',
+    description: 'Include workspace packages (use --no-workspaces to exclude)',
     listGroup: 'Workspace options',
   },
 };
@@ -117,11 +143,19 @@ const cli = peowly({
   }),
   name: 'installed-check',
   pkg,
-  // @ts-expect-error - allowNegative is supported by parseArgs but not in peowly types yet
-  // TODO: Create peowly issue to add allowNegative (and other ParseArgsConfig options like
-  // allowPositionals) to ExtendedParseArgsConfig type definition so they're properly typed
-  allowNegative: true,
+  // TODO [engine:node@>=22.4.0]: Add allowNegative: true and remove preprocessArgs/negationFlags
+  // allowNegative option (for --no- prefix) is only available in Node.js >=22.4.0
+  // Since we support >=18.6.0, we use preprocessArgs to handle --no- flags manually
+  args: preprocessArgs(process.argv.slice(2)),
 });
+
+// Apply negation flags manually (TODO [engine:node@>=22.4.0]: Remove this block)
+if (negationFlags.has('workspaces')) {
+  cli.flags.workspaces = false;
+}
+if (negationFlags.has('include-workspace-root')) {
+  cli.flags['include-workspace-root'] = false;
+}
 
 if (cli.input.length > 1) {
   console.error(chalk.bgRed('Invalid input:') + ` Can only handle a single folder path, but received ${cli.input.length} paths: "${cli.input.join('", "')}"` + '\n');
