@@ -1,5 +1,6 @@
 /* eslint-disable no-console, unicorn/no-process-exit */
 
+import pathModule from 'node:path';
 import chalk from 'chalk';
 import meow from 'meow';
 import { messageWithCauses, stackWithCauses } from 'pony-cause';
@@ -110,9 +111,42 @@ let checks = [
 ];
 
 // Detect if we're in a workspace within a larger monorepo
-// If so, use the parent workspace root to enable access to parent's node_modules
+// If so, use the ultimate parent workspace root to enable access to parent's node_modules
 const requestedCwd = cli.input[0] || process.cwd();
-const parentWorkspaceRoot = await resolveWorkspaceRootAsync(requestedCwd);
+
+/**
+ * Find the ultimate parent workspace root by walking up the directory tree
+ *
+ * @param {string} dir
+ * @returns {Promise<string|undefined>}
+ */
+async function findUltimateWorkspaceRoot (dir) {
+  let currentRoot = await resolveWorkspaceRootAsync(dir);
+  if (!currentRoot) return;
+
+  let ultimateRoot = currentRoot;
+
+  // Keep looking for parent workspace roots
+  while (currentRoot) {
+    // Check if the current root is itself part of a parent workspace
+    // We need to check from the parent of the current root
+    const grandparentDir = pathModule.resolve(currentRoot, '..', '..');
+    const parentRoot = await resolveWorkspaceRootAsync(grandparentDir);
+
+    // If we found a parent root and it contains our current root, keep going
+    if (parentRoot && parentRoot !== currentRoot && currentRoot.startsWith(parentRoot + pathModule.sep)) {
+      ultimateRoot = parentRoot;
+      currentRoot = parentRoot;
+    } else {
+      // No more parents, we found the ultimate root
+      break;
+    }
+  }
+
+  return ultimateRoot;
+}
+
+const parentWorkspaceRoot = await findUltimateWorkspaceRoot(requestedCwd);
 
 let resolvedCwd = requestedCwd;
 let workspaceFilter = workspace;
