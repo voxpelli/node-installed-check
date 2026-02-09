@@ -69,6 +69,7 @@ Use [installed-check-core](https://github.com/voxpelli/node-installed-check-core
 ## Workspace options
 
   * `--no-include-workspace-root` – excludes the workspace root package. Negated equivalent of npm's [`--include-workspace-root`](https://docs.npmjs.com/cli/v10/commands/npm-run-script#include-workspace-root)
+  * `--no-parent-workspace` – disables automatic detection and use of parent workspace root for module resolution
   * `--no-workspaces` – excludes workspace packages. Negated equivalent of npm's [`--workspaces`](https://docs.npmjs.com/cli/v10/commands/npm-run-script#workspaces)
   * `--workspace=ARG` / `-w ARG` – excludes all workspace packages not matching these names / paths. Equivalent to npm's [`--workspace` / `-w`](https://docs.npmjs.com/cli/v10/commands/npm-run-script#workspace)
   * `--workspace-ignore=ARG` – excludes the specified paths from workspace lookup. (Supports globs)
@@ -76,6 +77,11 @@ Use [installed-check-core](https://github.com/voxpelli/node-installed-check-core
 ### Nested workspace support
 
 When running `installed-check` within a workspace that is part of a larger monorepo (e.g., when using `git subtree` or working in a nested monorepo structure), the tool will automatically detect the parent workspace root and include modules from the parent's `node_modules` directory. This ensures that dependencies hosted at the monorepo root level are properly detected and checked.
+
+This behavior is automatic when:
+- No explicit workspace filters are provided (`--workspace`)
+- No custom path is specified as a command argument
+- The `--no-parent-workspace` flag is not used
 
 For example, if you have a structure like:
 ```
@@ -87,6 +93,8 @@ For example, if you have a structure like:
 ```
 
 Running `installed-check` in `/parent-monorepo/packages/my-workspace` will automatically detect the parent monorepo and check dependencies from both the workspace and the parent's `node_modules`.
+
+To disable this behavior, use the `--no-parent-workspace` flag.
 
 ### Additional command line options
 

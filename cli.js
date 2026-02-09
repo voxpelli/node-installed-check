@@ -33,6 +33,7 @@ const cli = meow(`
 
   Workspace options
     --no-include-workspace-root  Will exclude the workspace root package
+    --no-parent-workspace        Will not detect and use parent workspace root for module resolution
     --no-workspaces              Will exclude workspace packages
     -w ARG, --workspace=ARG      Excludes all workspace packages not matching these names / paths
     --workspace-ignore=ARG       Excludes the specified paths from workspace lookup. (Supports globs)
@@ -55,6 +56,7 @@ const cli = meow(`
     ignore: { shortFlag: 'i', type: 'string', isMultiple: true },
     ignoreDev: { shortFlag: 'd', type: 'boolean' },
     includeWorkspaceRoot: { type: 'boolean', 'default': true },
+    noParentWorkspace: { type: 'boolean', 'default': false },
     peerCheck: { shortFlag: 'p', type: 'boolean' },
     strict: { shortFlag: 's', type: 'boolean' },
     verbose: { shortFlag: 'v', type: 'boolean' },
@@ -78,6 +80,7 @@ const {
   engineNoDev, // deprecated
   fix = false,
   includeWorkspaceRoot,
+  noParentWorkspace,
   peerCheck,
   strict,
   verbose,
@@ -113,20 +116,23 @@ let checks = [
 // If so, use the parent workspace root to enable access to parent's node_modules
 const requestedCwd = cli.input[0] || process.cwd();
 
-const parentWorkspaceRoot = await resolveWorkspaceRootAsync(requestedCwd);
-
 let resolvedCwd = requestedCwd;
 let workspaceFilter = workspace;
 
-// If we found a parent workspace root different from our requested cwd,
-// we're in a workspace situation
-if (parentWorkspaceRoot && parentWorkspaceRoot !== requestedCwd) {
-  // Use the parent workspace root as cwd to get access to its node_modules
-  resolvedCwd = parentWorkspaceRoot;
+// Only detect parent workspace if:
+// - User hasn't explicitly opted out with --no-parent-workspace
+// - User hasn't provided explicit workspace filters (which would be incompatible)
+// - User hasn't provided a custom cwd path (cli.input[0])
+if (!noParentWorkspace && !workspace?.length && !cli.input[0]) {
+  const parentWorkspaceRoot = await resolveWorkspaceRootAsync(requestedCwd);
 
-  // If no explicit workspace filter was provided, filter to just the current workspace
-  // to avoid checking all workspaces in the parent monorepo
-  if (!workspace || workspace.length === 0) {
+  // If we found a parent workspace root different from our requested cwd,
+  // we're in a workspace situation
+  if (parentWorkspaceRoot && parentWorkspaceRoot !== requestedCwd) {
+    // Use the parent workspace root as cwd to get access to its node_modules
+    resolvedCwd = parentWorkspaceRoot;
+
+    // Filter to just the current workspace to avoid checking all workspaces in the parent monorepo
     workspaceFilter = [requestedCwd];
   }
 }
