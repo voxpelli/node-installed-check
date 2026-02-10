@@ -17,6 +17,7 @@ import { visit } from 'unist-util-visit';
  * @returns {Promise<string | undefined>} The extracted code block content, or undefined if not found
  */
 export async function extractExpectedOutput (readmePath, marker = 'EXPECTED OUTPUT') {
+  // eslint-disable-next-line security/detect-non-literal-fs-filename
   const content = await readFile(readmePath, 'utf8');
   const tree = unified().use(remarkParse).parse(content);
 
