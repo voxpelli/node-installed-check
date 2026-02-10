@@ -1,13 +1,19 @@
 /* eslint-disable no-console, unicorn/no-process-exit */
 
 import { resolve } from 'node:path';
+import { createRequire } from 'node:module';
 import chalk from 'chalk';
-import meow from 'meow';
+import { formatHelpMessage, peowly } from 'peowly';
 import { messageWithCauses, stackWithCauses } from 'pony-cause';
 import { installedCheck, ROOT } from 'installed-check-core';
 import resolveWorkspaceRootPkg from 'resolve-workspace-root';
 
 const { resolveWorkspaceRootAsync } = resolveWorkspaceRootPkg;
+
+// createRequire is needed to load package.json in ESM context
+// @ts-expect-error - TS doesn't recognize that require is used below
+const require = createRequire(import.meta.url);
+const pkg = require('./package.json');
 
 const EXIT_CODE_ERROR_RESULT = 1;
 const EXIT_CODE_INVALID_INPUT = 2;
@@ -26,60 +32,143 @@ function debugLog (debug, label, message) {
   }
 }
 
-const cli = meow(`
-  Usage
-    $ installed-check <path to module folder>
-
-  Defaults to current folder and to perform all checks.
-
-  Checks
-    -e, --engine-check    Override default checks and explicitly request an engine range check
-    -p, --peer-check      Override default checks and explicitly request a peer dependency range check
-    -c, --version-check   Override default checks and explicitly request a check of installed versions
-
-  Check options
-    -i ARG, --ignore=ARG  Excludes the named dependency from non-version checks.(Supports globs)
-    -d, --ignore-dev      Excludes dev dependencies from non-version checks
-    -s, --strict          Treat warnings as errors
-
-  Fix options
-    --fix  Tries to apply all suggestions and write them back to disk
-
-  Workspace options
-    --no-include-workspace-root  Will exclude the workspace root package
-    --no-parent-workspace        Will not detect and use parent workspace root for module resolution
-    --no-workspaces              Will exclude workspace packages
-    -w ARG, --workspace=ARG      Excludes all workspace packages not matching these names / paths
-    --workspace-ignore=ARG       Excludes the specified paths from workspace lookup. (Supports globs)
-
-  Options
-    --debug        Prints debug info
-    --help         Print this help and exits
-    --version      Prints current version and exits
-    -v, --verbose  Shows warnings
-
-  Examples
-    $ installed-check
-`, {
-  flags: {
-    debug: { type: 'boolean' },
-    engineCheck: { shortFlag: 'e', type: 'boolean' },
-    engineIgnore: { type: 'string', isMultiple: true },
-    engineNoDev: { type: 'boolean' },
-    fix: { type: 'boolean' },
-    ignore: { shortFlag: 'i', type: 'string', isMultiple: true },
-    ignoreDev: { shortFlag: 'd', type: 'boolean' },
-    includeWorkspaceRoot: { type: 'boolean', 'default': true },
-    parentWorkspace: { type: 'boolean', 'default': true },
-    peerCheck: { shortFlag: 'p', type: 'boolean' },
-    strict: { shortFlag: 's', type: 'boolean' },
-    verbose: { shortFlag: 'v', type: 'boolean' },
-    versionCheck: { shortFlag: 'c', type: 'boolean' },
-    workspace: { shortFlag: 'w', type: 'string', isMultiple: true },
-    workspaceIgnore: { type: 'string', isMultiple: true },
-    workspaces: { type: 'boolean', 'default': true },
+const baseFlags = /** @satisfies {Record<string, import('peowly').AnyFlag>} */ ({
+  debug: {
+    type: 'boolean',
+    'default': false,
+    description: 'Prints debug info',
   },
-  importMeta: import.meta,
+  verbose: {
+    'short': 'v',
+    type: 'boolean',
+    'default': false,
+    description: 'Shows warnings',
+  },
+});
+
+const checkFlags = /** @satisfies {Record<string, import('peowly').AnyFlag & { listGroup: 'Checks' }>} */ ({
+  engineCheck: {
+    'short': 'e',
+    type: 'boolean',
+    'default': false,
+    description: 'Override default checks and explicitly request an engine range check',
+    listGroup: 'Checks',
+  },
+  peerCheck: {
+    'short': 'p',
+    type: 'boolean',
+    'default': false,
+    description: 'Override default checks and explicitly request a peer dependency range check',
+    listGroup: 'Checks',
+  },
+  versionCheck: {
+    'short': 'c',
+    type: 'boolean',
+    'default': false,
+    description: 'Override default checks and explicitly request a check of installed versions',
+    listGroup: 'Checks',
+  },
+});
+
+const checkOptionFlags = /** @satisfies {Record<string, import('peowly').AnyFlag & { listGroup: 'Check options' }>} */ ({
+  ignore: {
+    'short': 'i',
+    type: 'string',
+    multiple: true,
+    description: 'Excludes the named dependency from non-version checks (Supports globs)',
+    listGroup: 'Check options',
+  },
+  ignoreDev: {
+    'short': 'd',
+    type: 'boolean',
+    'default': false,
+    description: 'Excludes dev dependencies from non-version checks',
+    listGroup: 'Check options',
+  },
+  strict: {
+    'short': 's',
+    type: 'boolean',
+    'default': false,
+    description: 'Treat warnings as errors',
+    listGroup: 'Check options',
+  },
+});
+
+const fixFlags = /** @satisfies {Record<string, import('peowly').AnyFlag & { listGroup: 'Fix options' }>} */ ({
+  fix: {
+    type: 'boolean',
+    'default': false,
+    description: 'Tries to apply all suggestions and write them back to disk',
+    listGroup: 'Fix options',
+  },
+});
+
+const workspaceFlags = /** @satisfies {Record<string, import('peowly').AnyFlag & { listGroup: 'Workspace options' }>} */ ({
+  'no-include-workspace-root': {
+    type: 'boolean',
+    'default': false,
+    description: 'Excludes the workspace root package',
+    listGroup: 'Workspace options',
+  },
+  'no-parent-workspace': {
+    type: 'boolean',
+    'default': false,
+    description: 'Disables detection and use of parent workspace root for module resolution',
+    listGroup: 'Workspace options',
+  },
+  'no-workspaces': {
+    type: 'boolean',
+    'default': false,
+    description: 'Excludes workspace packages',
+    listGroup: 'Workspace options',
+  },
+  workspace: {
+    'short': 'w',
+    type: 'string',
+    multiple: true,
+    description: 'Excludes all workspace packages not matching these names / paths',
+    listGroup: 'Workspace options',
+  },
+  workspaceIgnore: {
+    type: 'string',
+    multiple: true,
+    description: 'Excludes the specified paths from workspace lookup (Supports globs)',
+    listGroup: 'Workspace options',
+  },
+});
+
+const deprecatedFlags = /** @satisfies {Record<string, import('peowly').AnyFlag & { listGroup: 'Deprecated options' }>} */ ({
+  engineIgnore: {
+    type: 'string',
+    multiple: true,
+    description: 'Deprecated: use --ignore instead',
+    listGroup: 'Deprecated options',
+  },
+  engineNoDev: {
+    type: 'boolean',
+    'default': false,
+    description: 'Deprecated: use --ignore-dev instead',
+    listGroup: 'Deprecated options',
+  },
+});
+
+const flags = /** @satisfies {import('peowly').AnyFlags} */ ({
+  ...baseFlags,
+  ...checkFlags,
+  ...checkOptionFlags,
+  ...fixFlags,
+  ...workspaceFlags,
+  ...deprecatedFlags,
+});
+
+const cli = peowly({
+  options: flags,
+  help: formatHelpMessage('installed-check', {
+    flags,
+    usage: '<path to module folder>',
+  }),
+  name: 'installed-check',
+  pkg,
 });
 
 if (cli.input.length > 1) {
@@ -92,22 +181,23 @@ const {
   engineCheck,
   engineIgnore, // deprecated
   engineNoDev, // deprecated
-  fix = false,
-  includeWorkspaceRoot,
-  parentWorkspace,
+  fix,
   peerCheck,
   strict,
   verbose,
   versionCheck,
   workspace,
   workspaceIgnore,
-  workspaces,
 } = cli.flags;
 
 let {
   ignore,
   ignoreDev,
 } = cli.flags;
+
+const includeWorkspaceRoot = !cli.flags['no-include-workspace-root'];
+const parentWorkspace = !cli.flags['no-parent-workspace'];
+const workspaces = !cli.flags['no-workspaces'];
 
 // Handle deprecated flags
 if (engineIgnore?.length) {
