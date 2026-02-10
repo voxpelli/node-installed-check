@@ -1,13 +1,9 @@
-/**
- * Test utilities for validating example outputs against README documentation
- *
- * @module lib/test-readme
- */
-
 import { readFile } from 'node:fs/promises';
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import { visit } from 'unist-util-visit';
+
+import { stripAnsi } from './helpers.js';
 
 /**
  * Extract expected output from README markdown using unified/remark
@@ -17,6 +13,7 @@ import { visit } from 'unist-util-visit';
  * @returns {Promise<string | undefined>} The extracted code block content, or undefined if not found
  */
 export async function extractExpectedOutput (readmePath, marker = 'EXPECTED OUTPUT') {
+  // eslint-disable-next-line security/detect-non-literal-fs-filename
   const content = await readFile(readmePath, 'utf8');
   const tree = unified().use(remarkParse).parse(content);
 
@@ -53,8 +50,10 @@ export async function extractExpectedOutput (readmePath, marker = 'EXPECTED OUTP
  * @returns {string} Normalized output
  */
 export function normalizeOutput (output) {
-  return output
-    .replaceAll(/\/\S+\/examples\//g, '/absolute/path/to/examples/')
-    .replaceAll('\r\n', '\n') // Normalize Windows line endings to Unix
+  return stripAnsi(
+    output
+      .replaceAll(/\/\S+\/examples\//g, '/absolute/path/to/examples/')
+      .replaceAll('\r\n', '\n') // Normalize Windows line endings to Unix
+  )
     .trim();
 }

@@ -7,6 +7,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
+// eslint-disable-next-line unicorn/import-style
 import { dirname, join } from 'node:path';
 import { extractExpectedOutput, normalizeOutput } from './test-readme.js';
 import { run } from './helpers.js';

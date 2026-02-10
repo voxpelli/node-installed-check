@@ -1,6 +1,6 @@
 /* eslint-disable no-console, unicorn/no-process-exit */
 
-import { resolve } from 'node:path';
+import pathModule from 'node:path';
 import { createRequire } from 'node:module';
 import chalk from 'chalk';
 import { formatHelpMessage, peowly } from 'peowly';
@@ -218,7 +218,7 @@ let checks = [
 
 // Detect if we're in a workspace within a larger monorepo
 // If so, use the parent workspace root to enable access to parent's node_modules
-const requestedCwd = resolve(cli.input[0] || process.cwd());
+const requestedCwd = pathModule.resolve(cli.input[0] || process.cwd());
 
 let resolvedCwd = requestedCwd;
 let workspaceFilter = workspace;
