@@ -190,12 +190,14 @@ const {
   workspaceIgnore,
 } = cli.flags;
 
+let {
+  ignore,
+  ignoreDev,
+} = cli.flags;
+
 const includeWorkspaceRoot = !cli.flags['no-include-workspace-root'];
 const parentWorkspace = !cli.flags['no-parent-workspace'];
 const workspaces = !cli.flags['no-workspaces'];
-
-let ignore = cli.flags.ignore;
-let ignoreDev = cli.flags.ignoreDev;
 
 // Handle deprecated flags
 if (engineIgnore?.length) {
