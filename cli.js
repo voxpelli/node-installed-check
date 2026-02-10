@@ -179,31 +179,23 @@ if (cli.input.length > 1) {
 const {
   debug,
   engineCheck,
+  engineIgnore, // deprecated
+  engineNoDev, // deprecated
   fix,
   peerCheck,
   strict,
   verbose,
   versionCheck,
+  workspace,
+  workspaceIgnore,
 } = cli.flags;
 
 const includeWorkspaceRoot = !cli.flags['no-include-workspace-root'];
 const parentWorkspace = !cli.flags['no-parent-workspace'];
 const workspaces = !cli.flags['no-workspaces'];
 
-// TODO: These flags require type casting because peowly's TypedFlag utility type doesn't properly
-// handle the base type extraction for flags with multiple: true. The TypedFlag type currently returns
-// 'unknown' for multi-value flags instead of the primitive type (string/boolean), which causes
-// TypedFlags to wrap it as Array<unknown> instead of Array<string> or Array<boolean>.
-// Fix needed in peowly: Update TypedFlag to use Flag['type'] extends 'string' pattern instead of
-// Flag extends { type: 'string' } to correctly extract the base type regardless of multiple property.
-// See: https://github.com/voxpelli/peowly/blob/main/lib/peowly-types.d.ts TypedFlag definition
-// Accessing multiple-value and deprecated flags that aren't in the typed interface
-const engineIgnore = /** @type {string[] | undefined} */ (/** @type {unknown} */ (cli.flags.engineIgnore)); // deprecated
-const engineNoDev = /** @type {boolean | undefined} */ (/** @type {unknown} */ (cli.flags.engineNoDev)); // deprecated
-let ignore = /** @type {string[] | undefined} */ (/** @type {unknown} */ (cli.flags.ignore));
-let ignoreDev = /** @type {boolean | undefined} */ (/** @type {unknown} */ (cli.flags.ignoreDev));
-const workspace = /** @type {string[] | undefined} */ (/** @type {unknown} */ (cli.flags.workspace));
-const workspaceIgnore = /** @type {string[] | undefined} */ (/** @type {unknown} */ (cli.flags.workspaceIgnore));
+let ignore = cli.flags.ignore;
+let ignoreDev = cli.flags.ignoreDev;
 
 // Handle deprecated flags
 if (engineIgnore?.length) {
