@@ -238,30 +238,20 @@ if (parentWorkspace && !workspace?.length) {
     debugLog(debug, 'Parent workspace detection', 'No parent workspace root found');
   }
 
-  // If we found a parent workspace root and it's different from the requested path
+  // If we found a parent workspace root different from our requested cwd,
+  // we're in a workspace situation
   if (parentWorkspaceRoot && parentWorkspaceRoot !== requestedCwd) {
-    debugLog(debug, 'Parent workspace detection', 'Parent workspace root differs from requested path');
-
-    // Use the parent workspace root as the cwd
+    // Use the parent workspace root as cwd to get access to its node_modules
     resolvedCwd = parentWorkspaceRoot;
 
-    // Filter to only the requested workspace
+    // Filter to just the current workspace to avoid checking all workspaces in the parent monorepo
     workspaceFilter = [requestedCwd];
 
-    // Don't include the parent workspace root itself in checks
+    // Don't include the workspace root (parent) in checks, only the filtered workspace
     resolvedIncludeWorkspaceRoot = false;
 
-    /** @type {string[]} */
-    const reasons = [];
-    if (requestedCwd !== process.cwd()) {
-      reasons.push('path was provided as argument');
-    }
-    if (workspaces) {
-      reasons.push('--workspaces flag is set');
-    }
-
-    debugLog(debug, 'Parent workspace detection', `Using parent workspace root because ${reasons.join(' and ')}`);
-  } else {
+    debugLog(debug, 'Parent workspace detection', 'Using parent workspace root, filtering to current workspace');
+  } else if (parentWorkspaceRoot === requestedCwd) {
     debugLog(debug, 'Parent workspace detection', 'Parent workspace root is same as requested cwd, not applying');
   }
 } else if (debug) {
@@ -272,23 +262,16 @@ if (parentWorkspace && !workspace?.length) {
   debugLog(debug, 'Parent workspace detection', 'Skipped (' + reasons.join(', ') + ')');
 }
 
+/** @type {import('installed-check-core').LookupOptions} */
 const lookupOptions = {
   cwd: resolvedCwd,
-  ...workspaceFilter ? { workspace: workspaceFilter } : {},
+  ignorePaths: workspaceIgnore,
   includeWorkspaceRoot: resolvedIncludeWorkspaceRoot,
-  workspaceIgnore,
-  workspaces,
+  skipWorkspaces: !workspaces,
+  workspace: workspaceFilter,
 };
 
-if (debug) {
-  console.error(chalk.blue('Effective options:'));
-  console.error('  cwd:', lookupOptions.cwd);
-  console.error('  workspace filter:', workspaceFilter || '(none)');
-  console.error('  includeWorkspaceRoot:', lookupOptions.includeWorkspaceRoot);
-  console.error('  workspaceIgnore:', lookupOptions.workspaceIgnore || '(none)');
-  console.error('  workspaces:', lookupOptions.workspaces);
-}
-
+/** @type {import('installed-check-core').InstalledCheckOptions} */
 const checkOptions = {
   noDev: ignoreDev,
   ignore,
