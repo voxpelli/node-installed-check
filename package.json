@@ -62,7 +62,7 @@
     "npm-run-all2": "^8.0.4",
     "remark-parse": "^11.0.0",
     "type-coverage": "^2.29.7",
-    "typescript": "~5.9.0",
+    "typescript": "~5.9.3",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.1.0"
   }
