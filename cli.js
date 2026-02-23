@@ -47,21 +47,21 @@ const baseFlags = /** @satisfies {Record<string, import('peowly').AnyFlag>} */ (
 });
 
 const checkFlags = /** @satisfies {Record<string, import('peowly').AnyFlag & { listGroup: 'Checks' }>} */ ({
-  engineCheck: {
+  'engine-check': {
     'short': 'e',
     type: 'boolean',
     'default': false,
     description: 'Override default checks and explicitly request an engine range check',
     listGroup: 'Checks',
   },
-  peerCheck: {
+  'peer-check': {
     'short': 'p',
     type: 'boolean',
     'default': false,
     description: 'Override default checks and explicitly request a peer dependency range check',
     listGroup: 'Checks',
   },
-  versionCheck: {
+  'version-check': {
     'short': 'c',
     type: 'boolean',
     'default': false,
@@ -78,7 +78,7 @@ const checkOptionFlags = /** @satisfies {Record<string, import('peowly').AnyFlag
     description: 'Excludes the named dependency from non-version checks (Supports globs)',
     listGroup: 'Check options',
   },
-  ignoreDev: {
+  'ignore-dev': {
     'short': 'd',
     type: 'boolean',
     'default': false,
@@ -129,7 +129,7 @@ const workspaceFlags = /** @satisfies {Record<string, import('peowly').AnyFlag &
     description: 'Excludes all workspace packages not matching these names / paths',
     listGroup: 'Workspace options',
   },
-  workspaceIgnore: {
+  'workspace-ignore': {
     type: 'string',
     multiple: true,
     description: 'Excludes the specified paths from workspace lookup (Supports globs)',
@@ -138,13 +138,13 @@ const workspaceFlags = /** @satisfies {Record<string, import('peowly').AnyFlag &
 });
 
 const deprecatedFlags = /** @satisfies {Record<string, import('peowly').AnyFlag & { listGroup: 'Deprecated options' }>} */ ({
-  engineIgnore: {
+  'engine-ignore': {
     type: 'string',
     multiple: true,
     description: 'Deprecated: use --ignore instead',
     listGroup: 'Deprecated options',
   },
-  engineNoDev: {
+  'engine-no-dev': {
     type: 'boolean',
     'default': false,
     description: 'Deprecated: use --ignore-dev instead',
@@ -178,21 +178,21 @@ if (cli.input.length > 1) {
 
 const {
   debug,
-  engineCheck,
-  engineIgnore, // deprecated
-  engineNoDev, // deprecated
+  'engine-check': engineCheck,
+  'engine-ignore': engineIgnore, // deprecated
+  'engine-no-dev': engineNoDev, // deprecated
   fix,
-  peerCheck,
+  'peer-check': peerCheck,
   strict,
   verbose,
-  versionCheck,
+  'version-check': versionCheck,
   workspace,
-  workspaceIgnore,
+  'workspace-ignore': workspaceIgnore,
 } = cli.flags;
 
 let {
   ignore,
-  ignoreDev,
+  'ignore-dev': ignoreDev,
 } = cli.flags;
 
 const includeWorkspaceRoot = !cli.flags['no-include-workspace-root'];
