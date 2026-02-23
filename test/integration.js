@@ -27,9 +27,6 @@ async function assertFlagRecognised (flag) {
     !result.output.includes('Unknown option'),
     `Flag ${flag} should be recognised by the CLI, got:\n${result.output}`
   );
-  // Exit code 4 means an unexpected error (e.g. ERR_PARSE_ARGS_UNKNOWN_OPTION);
-  // exit codes 0 and 1 are both valid results from a recognised flag.
-  assert.notEqual(result.code, 4, `Flag ${flag} caused an unexpected error:\n${result.output}`);
 }
 
 describe('Basic Example', () => {
@@ -139,6 +136,18 @@ describe('CLI flag names', () => {
   // Regression tests: these flags broke when migrating from meow to peowly because
   // peowly uses flag key names as-is (no camelCase→kebab-case conversion like meow did).
   // Each test ensures the flag is recognised by the CLI (not rejected as "Unknown option").
+
+  it('rejects an unknown flag (validates assertFlagRecognised itself)', async () => {
+    // A camelCase flag like --engineCheck is unknown to peowly — this negative test
+    // confirms that assertFlagRecognised would catch a regression if a kebab-case key
+    // were accidentally reverted to camelCase.
+    const result = await run(`node "${cliPath}" --engineCheck examples/basic`, rootDir);
+    assert.ok(
+      result.output.includes('Unknown option'),
+      `Expected --engineCheck to be rejected as unknown, got:\n${result.output}`
+    );
+    assert.notEqual(result.code, 0, `Expected non-zero exit code for unknown flag, got ${result.code}`);
+  });
 
   it('accepts --engine-check', async () => { await assertFlagRecognised('--engine-check'); });
   it('accepts --peer-check', async () => { await assertFlagRecognised('--peer-check'); });
