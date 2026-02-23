@@ -16,6 +16,22 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = join(__dirname, '..');
 const cliPath = join(rootDir, 'cli-wrapper.cjs');
 
+/**
+ * Asserts that a CLI flag is recognised (not rejected as "Unknown option").
+ *
+ * @param {string} flag
+ */
+async function assertFlagRecognised (flag) {
+  const result = await run(`node "${cliPath}" ${flag} examples/basic`, rootDir);
+  assert.ok(
+    !result.output.includes('Unknown option'),
+    `Flag ${flag} should be recognised by the CLI, got:\n${result.output}`
+  );
+  // Exit code 4 means an unexpected error (e.g. ERR_PARSE_ARGS_UNKNOWN_OPTION);
+  // exit codes 0 and 1 are both valid results from a recognised flag.
+  assert.notEqual(result.code, 4, `Flag ${flag} caused an unexpected error:\n${result.output}`);
+}
+
 describe('Basic Example', () => {
   it('output matches README expected output', async () => {
     const expectedOutput = await extractExpectedOutput(join(rootDir, 'examples/basic/README.md'));
@@ -117,4 +133,18 @@ describe('Monorepo Example', () => {
       `Output mismatch.\nExpected:\n${normalizedExpected}\n\nActual:\n${normalizedOutput}`
     );
   });
+});
+
+describe('CLI flag names', () => {
+  // Regression tests: these flags broke when migrating from meow to peowly because
+  // peowly uses flag key names as-is (no camelCase→kebab-case conversion like meow did).
+  // Each test ensures the flag is recognised by the CLI (not rejected as "Unknown option").
+
+  it('accepts --engine-check', async () => { await assertFlagRecognised('--engine-check'); });
+  it('accepts --peer-check', async () => { await assertFlagRecognised('--peer-check'); });
+  it('accepts --version-check', async () => { await assertFlagRecognised('--version-check'); });
+  it('accepts --ignore-dev', async () => { await assertFlagRecognised('--ignore-dev'); });
+  it('accepts --workspace-ignore', async () => { await assertFlagRecognised('--workspace-ignore=foo'); });
+  it('accepts --engine-ignore (deprecated)', async () => { await assertFlagRecognised('--engine-ignore=foo'); });
+  it('accepts --engine-no-dev (deprecated)', async () => { await assertFlagRecognised('--engine-no-dev'); });
 });
