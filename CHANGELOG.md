@@ -1,5 +1,17 @@
 # Changelog
 
+## [10.0.1](https://github.com/voxpelli/node-installed-check/compare/v10.0.0...v10.0.1) (2026-02-23)
+
+
+### 🩹 Fixes
+
+* kebab-case CLI flags broke in peowly migration ([#125](https://github.com/voxpelli/node-installed-check/issues/125)) ([09f511a](https://github.com/voxpelli/node-installed-check/commit/09f511a4d00a3a3642a7c8dddc221f3f7a981e7f))
+
+
+### 🧹 Chores
+
+* **deps:** update dependency typescript to ~5.9.3 ([#109](https://github.com/voxpelli/node-installed-check/issues/109)) ([7700887](https://github.com/voxpelli/node-installed-check/commit/7700887952e27fcb5661658d8cda38819c0cdde6))
+
 ## [10.0.0](https://github.com/voxpelli/node-installed-check/compare/v9.3.0...v10.0.0) (2026-02-10)
 
 
