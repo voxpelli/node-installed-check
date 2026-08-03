@@ -59,7 +59,7 @@
     "@voxpelli/tsconfig": "^16.2.1",
     "eslint": "^9.39.2",
     "husky": "^9.1.7",
-    "knip": "^5.83.1",
+    "knip": "^6.31.0",
     "npm-run-all2": "^9.0.3",
     "remark-parse": "^11.0.0",
     "type-coverage": "^2.30.1",
