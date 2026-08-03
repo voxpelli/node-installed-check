@@ -104,21 +104,21 @@ const fixFlags = /** @satisfies {Record<string, import('peowly').AnyFlag & { lis
 });
 
 const workspaceFlags = /** @satisfies {Record<string, import('peowly').AnyFlag & { listGroup: 'Workspace options' }>} */ ({
-  'no-include-workspace-root': {
+  'include-workspace-root': {
     type: 'boolean',
-    'default': false,
+    'default': true,
     description: 'Excludes the workspace root package',
     listGroup: 'Workspace options',
   },
-  'no-parent-workspace': {
+  'parent-workspace': {
     type: 'boolean',
-    'default': false,
+    'default': true,
     description: 'Disables detection and use of parent workspace root for module resolution',
     listGroup: 'Workspace options',
   },
-  'no-workspaces': {
+  'workspaces': {
     type: 'boolean',
-    'default': false,
+    'default': true,
     description: 'Excludes workspace packages',
     listGroup: 'Workspace options',
   },
@@ -182,22 +182,21 @@ const {
   'engine-ignore': engineIgnore, // deprecated
   'engine-no-dev': engineNoDev, // deprecated
   fix,
+  'include-workspace-root': includeWorkspaceRoot,
+  'parent-workspace': parentWorkspace,
   'peer-check': peerCheck,
   strict,
   verbose,
   'version-check': versionCheck,
   workspace,
   'workspace-ignore': workspaceIgnore,
+  workspaces,
 } = cli.flags;
 
 let {
   ignore,
   'ignore-dev': ignoreDev,
 } = cli.flags;
-
-const includeWorkspaceRoot = !cli.flags['no-include-workspace-root'];
-const parentWorkspace = !cli.flags['no-parent-workspace'];
-const workspaces = !cli.flags['no-workspaces'];
 
 // Handle deprecated flags
 if (engineIgnore?.length) {
