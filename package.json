@@ -16,17 +16,17 @@
     "cli.js"
   ],
   "scripts": {
-    "check:lint": "eslint",
+    "check": "run-p check:*",
     "check:installed-check": "node cli-wrapper.cjs",
     "check:knip": "knip",
+    "check:lint": "eslint",
     "check:tsc": "tsc",
     "check:type-coverage": "type-coverage --detail --strict --at-least 95",
-    "check": "run-p check:*",
     "prepare": "husky",
-    "test:integration": "node --test test/integration.js",
+    "test": "run-s check test:examples:install test:integration",
     "test:examples:install": "cd examples/basic && npm install && cd ../monorepo && npm install && cd ../..",
-    "test-ci": "run-s test:examples:install test:integration check:installed-check",
-    "test": "run-s check test:examples:install test:integration"
+    "test:integration": "node --test test/integration.js",
+    "test-ci": "run-s test:examples:install test:integration check:installed-check"
   },
   "keywords": [
     "cli",
@@ -55,9 +55,9 @@
   },
   "devDependencies": {
     "@types/node": "^22.20.1",
-    "@voxpelli/eslint-config": "^23.0.0",
+    "@voxpelli/eslint-config": "^25.1.0",
     "@voxpelli/tsconfig": "^16.2.1",
-    "eslint": "^9.39.2",
+    "eslint": "^9.39.5",
     "husky": "^9.1.7",
     "knip": "^6.31.0",
     "npm-run-all2": "^9.0.3",

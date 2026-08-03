@@ -1,4 +1,5 @@
 {
+  "type": "commonjs",
   "name": "workspace-a",
   "version": "1.0.0",
   "private": true,
