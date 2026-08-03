@@ -1,5 +1,25 @@
 # Changelog
 
+## [11.0.0](https://github.com/voxpelli/node-installed-check/compare/v10.0.1...v11.0.0) (2026-08-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* The minimum supported Node.js version is now 22.22.2. Users on Node.js 20 will need to upgrade. (Will fail silently on lower versions)
+
+### 🌟 Features
+
+* **deps:** update dependencies ([361bf51](https://github.com/voxpelli/node-installed-check/commit/361bf5150b54b9f9dcfc1c483b41d37836fb320d))
+
+
+### 🧹 Chores
+
+* **deps:** update knip to ^6 ([a6faeac](https://github.com/voxpelli/node-installed-check/commit/a6faeac49bafcad95f120cac99868dcb360e0f1c))
+* **deps:** update linting ([705f9e7](https://github.com/voxpelli/node-installed-check/commit/705f9e78d515ae98717c13bcb7ae4a43c4a44986))
+* **deps:** update npm-run-all2 to version 9.0.3 ([23227aa](https://github.com/voxpelli/node-installed-check/commit/23227aae829611238063bf5601947cb6d5628f8e))
+* drop Node.js 20 support, require Node.js 22+ ([130410f](https://github.com/voxpelli/node-installed-check/commit/130410f6aee385c3102b0b201789a4ec4d88af00))
+* remove CodeQL analysis workflow ([57a779e](https://github.com/voxpelli/node-installed-check/commit/57a779ed3aadd0d0ddfa8a60b26b74728898918a))
+
 ## [10.0.1](https://github.com/voxpelli/node-installed-check/compare/v10.0.0...v10.0.1) (2026-02-23)
 
 
