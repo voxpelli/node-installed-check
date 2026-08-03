@@ -5,16 +5,14 @@
  */
 
 import assert from 'node:assert/strict';
+import path from 'node:path';
 import { describe, it } from 'node:test';
-import { fileURLToPath } from 'node:url';
-// eslint-disable-next-line unicorn/import-style
-import { dirname, join } from 'node:path';
-import { extractExpectedOutput, normalizeOutput } from './test-readme.js';
-import { run } from './helpers.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const rootDir = join(__dirname, '..');
-const cliPath = join(rootDir, 'cli-wrapper.cjs');
+import { run } from './helpers.js';
+import { extractExpectedOutput, normalizeOutput } from './test-readme.js';
+
+const rootDir = path.join(import.meta.dirname, '..');
+const cliPath = path.join(rootDir, 'cli-wrapper.cjs');
 
 /**
  * Asserts that a CLI flag is recognised (not rejected as "Unknown option").
@@ -31,7 +29,7 @@ async function assertFlagRecognised (flag) {
 
 describe('Basic Example', () => {
   it('output matches README expected output', async () => {
-    const expectedOutput = await extractExpectedOutput(join(rootDir, 'examples/basic/README.md'));
+    const expectedOutput = await extractExpectedOutput(path.join(rootDir, 'examples/basic/README.md'));
     assert.ok(expectedOutput !== undefined, 'Could not extract expected output from README');
 
     const result = await run(`node "${cliPath}" examples/basic`, rootDir);
@@ -47,7 +45,7 @@ describe('Basic Example', () => {
 
 describe('Monorepo Example', () => {
   it('workspace-a output matches README expected output', async () => {
-    const expectedOutput = await extractExpectedOutput(join(rootDir, 'examples/monorepo/packages/workspace-a/README.md'));
+    const expectedOutput = await extractExpectedOutput(path.join(rootDir, 'examples/monorepo/packages/workspace-a/README.md'));
 
     // If there's no expected output in README, it means the example should pass cleanly
     if (expectedOutput === undefined) {
@@ -72,7 +70,7 @@ describe('Monorepo Example', () => {
 
   it('debug output shows parent workspace detection', async () => {
     const expectedDebug = await extractExpectedOutput(
-      join(rootDir, 'examples/monorepo/packages/workspace-a/README.md'),
+      path.join(rootDir, 'examples/monorepo/packages/workspace-a/README.md'),
       'DEBUG OUTPUT'
     );
     assert.ok(expectedDebug !== undefined, 'Could not extract expected debug output from README');
@@ -116,7 +114,7 @@ describe('Monorepo Example', () => {
 
   it('running from monorepo root matches README expected output', async () => {
     const expectedOutput = await extractExpectedOutput(
-      join(rootDir, 'examples/monorepo/README.md'),
+      path.join(rootDir, 'examples/monorepo/README.md'),
       'EXPECTED OUTPUT'
     );
     assert.ok(expectedOutput !== undefined, 'Could not extract expected root output from README');

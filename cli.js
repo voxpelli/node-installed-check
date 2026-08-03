@@ -1,11 +1,11 @@
 /* eslint-disable no-console, unicorn/no-process-exit */
 
-import pathModule from 'node:path';
 import { createRequire } from 'node:module';
+import pathModule from 'node:path';
 import chalk from 'chalk';
+import { installedCheck, ROOT } from 'installed-check-core';
 import { formatHelpMessage, peowly } from 'peowly';
 import { messageWithCauses, stackWithCauses } from 'pony-cause';
-import { installedCheck, ROOT } from 'installed-check-core';
 import resolveWorkspaceRootPkg from 'resolve-workspace-root';
 
 const { resolveWorkspaceRootAsync } = resolveWorkspaceRootPkg;

@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
-import { unified } from 'unified';
 import remarkParse from 'remark-parse';
+import { unified } from 'unified';
 import { visit } from 'unist-util-visit';
 
 import { stripAnsi } from './helpers.js';
