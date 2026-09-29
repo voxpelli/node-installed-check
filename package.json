@@ -57,7 +57,7 @@
     "@types/node": "^22.20.1",
     "@voxpelli/eslint-config": "^25.1.0",
     "@voxpelli/tsconfig": "^16.2.1",
-    "eslint": "^9.39.5",
+    "eslint": "^10.11.0",
     "husky": "^9.1.7",
     "knip": "^6.31.0",
     "npm-run-all2": "^9.0.3",
