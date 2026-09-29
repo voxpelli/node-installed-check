@@ -54,7 +54,7 @@
     "version-guard": "^1.1.3"
   },
   "devDependencies": {
-    "@types/node": "^22.20.1",
+    "@types/node": "^22.20.4",
     "@voxpelli/eslint-config": "^25.1.0",
     "@voxpelli/tsconfig": "^16.2.1",
     "eslint": "^9.39.5",
@@ -62,7 +62,7 @@
     "knip": "^6.31.0",
     "npm-run-all2": "^9.0.3",
     "remark-parse": "^11.0.0",
-    "type-coverage": "^2.30.1",
+    "type-coverage": "^2.30.2",
     "typescript": "~6.0.3",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.1.0"
